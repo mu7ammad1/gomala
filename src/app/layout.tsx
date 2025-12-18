@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import Navbar from "@/components/tutorial/navbar";
-import Header from "@/components/tutorial/Header";
 
 
 export const metadata: Metadata = {
