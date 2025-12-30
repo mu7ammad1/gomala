@@ -78,7 +78,8 @@ const productsData: { [key: string]: { title: string; price: number; image: stri
     image: "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
     description: "This is product 2",
     gallery: [
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
       "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
       "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
       "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"
