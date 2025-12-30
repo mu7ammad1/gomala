@@ -83,7 +83,7 @@ export function SheetProfile() {
   const { cart, removeFromCart, updateQuantity, totalPrice, totalItems } = useCart();
 
   return (
-    <Sheet className={"max-sm:w-[100%]"}>
+    <Sheet>
       <SheetTrigger asChild>
         <Button
           variant={"default"}
