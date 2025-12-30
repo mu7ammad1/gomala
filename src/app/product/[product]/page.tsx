@@ -122,13 +122,22 @@ export default function Page() {
   const { addToCart } = useCart();
   const [cartOpen, setCartOpen] = useState(false);
 
-  const productInfo = productsData[productId] || {
-    title: "Huawei FreeBuds 7i",
-    price: 3999,
-    image: "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-    description: "Default product",
-    gallery: ["https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"]
-  };
+  const productInfo = productsData[productId];
+
+  if (!productInfo) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+        <div className="bg-secondary/20 p-6 rounded-full mb-6">
+          <LucideShoppingBag size={48} className="text-muted-foreground opacity-50" />
+        </div>
+        <h2 className="text-2xl font-bold mb-2">عذراً، المنتج غير موجود</h2>
+        <p className="text-muted-foreground mb-8">ربما تم حذف المنتج أو أن الرابط غير صحيح.</p>
+        <Button asChild variant="default" className="rounded-full px-8">
+          <Link href="/">العودة للرئيسية</Link>
+        </Button>
+      </div>
+    );
+  }
 
   const [mainImage, setMainImage] = useState(productInfo.image);
 
@@ -158,7 +167,6 @@ export default function Page() {
       cartButton.click();
     }
   };
-
   return (
     <div className="w-full">
       <div className="flex gap-5 max-md:flex-col *:w-1/2 *:max-md:w-full pb-10 max-md:max-h-full max-lg:px-3">
