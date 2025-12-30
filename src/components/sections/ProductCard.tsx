@@ -109,7 +109,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
             variant={"outline"}
             size={"lg"}
           >
-            طلب اوردر
+            عرض التفاصيل
           </Button>
         </Link>
       </CardFooter>

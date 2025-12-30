@@ -211,7 +211,7 @@ export default function Page() {
                   size={"lg"}
                   onClick={handleOrder}
                 >
-                  طلب اوردر
+                  إضافة للسلة
                 </Button>
               </div>
             </div>
