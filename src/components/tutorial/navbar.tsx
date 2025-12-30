@@ -1,3 +1,5 @@
+"use client";
+
 import Link from 'next/link';
 import { LucideShoppingBag } from 'lucide-react';
 import { SheetProfile } from '../auth-button';
