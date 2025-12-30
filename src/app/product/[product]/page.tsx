@@ -19,6 +19,7 @@ import { useCart } from "@/hooks/use-cart";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { SheetProfile } from "@/components/auth-button";
 import { useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const productsData: { [key: string]: { title: string; price: number; image: string; description: string; gallery?: string[] } } = {
   "1632548806": {
@@ -36,37 +37,61 @@ const productsData: { [key: string]: { title: string; price: number; image: stri
     title: "Apple IPhone 17 Pro Max With FaceTime - 512GB, 12GB RAM",
     price: 200,
     image: "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-    description: "This is product 2"
+    description: "This is product 2",
+    gallery: [
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"
+    ]
   },
   "613245581": {
     title: "Apple IPhone 16 Pro Max With FaceTime - 1TB, 8GB RAM",
     price: 300,
     image: "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
-    description: "This is product 3"
+    description: "This is product 3",
+    gallery: [
+      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp"
+    ]
   },
   "723245582": {
     title: "Apple IPhone 15 Mini With FaceTime - 256GB, 6GB RAM",
     price: 150,
     image: "https://static.mobilemasr.com/public/categories/683d9ce6ecda7_1748868326.webp",
-    description: "This is product 4"
+    description: "This is product 4",
+    gallery: [
+      "https://static.mobilemasr.com/public/categories/683d9ce6ecda7_1748868326.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"
+    ]
   },
   "193295508": {
     title: "Apple IPhone 17 Pro Max With FaceTime - 512GB, 12GB RAM",
     price: 200,
     image: "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-    description: "This is product 2"
+    description: "This is product 2",
+    gallery: [
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"
+    ]
   },
   "823245583": {
     title: "Apple IPhone 14 Pro Max With FaceTime - 512GB, 8GB RAM",
     price: 220,
     image: "https://static.mobilemasr.com/public/categories/683d9cfd3e58f_1748868349.webp",
-    description: "This is product 5"
+    description: "This is product 5",
+    gallery: [
+      "https://static.mobilemasr.com/public/categories/683d9cfd3e58f_1748868349.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"
+    ]
   },
   "118925508": {
     title: "Apple IPhone 17 Pro Max With FaceTime - 512GB, 12GB RAM",
     price: 200,
     image: "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-    description: "This is product 2"
+    description: "This is product 2",
+    gallery: [
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"
+    ]
   },
 };
 
@@ -114,54 +139,68 @@ export default function Page() {
   return (
     <div className="w-full">
       <div className="flex gap-5 max-md:flex-col *:w-1/2 *:max-md:w-full pb-10 max-md:max-h-full max-lg:px-3">
-        <div className=" gap-3 flex flex-col border rounded-3xl p-0">
-          <img
-            src={mainImage}
-            alt={productInfo.title}
-            className="w-full object-contain rounded-t-3xl h-96 aspect-square cursor-pointer"
-          />
+        <div className="gap-3 flex flex-col border rounded-3xl p-0 overflow-hidden bg-white dark:bg-gray-900">
+          <div className="relative h-96 w-full bg-secondary/10">
+            <AnimatePresence mode="wait">
+              <motion.img
+                key={mainImage}
+                src={mainImage}
+                alt={productInfo.title}
+                initial={ { opacity: 0, x: 20 } }
+                animate={ { opacity: 1, x: 0 } }
+                exit={ { opacity: 0, x: -20 } }
+                transition={ { duration: 0.3, ease: "easeInOut" } }
+                className="w-full h-full object-contain cursor-pointer"
+              />
+            </AnimatePresence>
+          </div>
 
-          <div className="flex gap-3 pb-2 pl-2 overflow-x-auto">
+          <div className="flex gap-3 pb-3 px-3 overflow-x-auto no-scrollbar">
             {productInfo.gallery?.map((img, index) => (
-              <Button
+              <motion.div
                 key={index}
-                className={`size-14 rounded-xl p-1.5 cursor-pointer active:scale-90 transition-all ${mainImage === img ? 'ring-2 ring-primary' : ''}`}
-                variant={"outline"}
-                size={"icon-lg"}
+                whileHover={ { scale: 1.05 } }
+                whileTap={ { scale: 0.95 } }
+                className={`flex-shrink-0 size-16 rounded-2xl border-2 transition-colors cursor-pointer overflow-hidden ${
+                  mainImage === img ? 'border-primary shadow-md' : 'border-transparent bg-secondary/20 hover:border-primary/50'
+                }`}
                 onClick={() => setMainImage(img)}
               >
                 <img
                   src={img}
                   alt={`${productInfo.title} ${index}`}
-                  className="w-full h-full object-cover rounded-xl"
+                  className="w-full h-full object-cover"
                 />
-              </Button>
+              </motion.div>
             ))}
           </div>
         </div>
 
-        <div className="">
+        <div className="flex flex-col">
           <div>
-            <p className="text-muted-foreground">Apple</p>
-            <h2 className="text-xl text-normal font-[400] leading-6 text-foreground">
+            <p className="text-muted-foreground text-sm mb-1 uppercase tracking-wider font-medium">Apple</p>
+            <h2 className="text-2xl font-bold leading-tight text-foreground mb-4">
               {productInfo.title}
             </h2>
-            <h1 className="text-2xl my-5 text-rose-400 font-medium gap-3">
-              {productInfo.price.toLocaleString()} <span className="font-[400] text-sm">EGP </span>
-            </h1>
+            <div className="flex items-baseline gap-2 mb-6">
+              <span className="text-3xl font-bold text-rose-500">
+                {productInfo.price.toLocaleString()}
+              </span>
+              <span className="text-sm font-medium text-muted-foreground">EGP</span>
+            </div>
           </div>
 
-          <h2 className="text-sm text-normal font-[500] leading-6 text-foreground my-5">
-            عايز اعمل طلب جديد
-          </h2>
-          <div className="">
-            <div className="gap-3 grid border p-2 rounded-xl w-full">
-              <div className="text-sm flex gap-3 flex-row items-center justify-between w-full">
-                <div className="flex gap-3 items-center">
+          <div className="mt-auto">
+            <h2 className="text-sm font-bold text-foreground mb-4">
+              عايز اعمل طلب جديد
+            </h2>
+            <div className="p-4 border rounded-2xl bg-white dark:bg-gray-800 shadow-sm">
+              <div className="flex flex-wrap gap-4 items-center justify-between">
+                <div className="flex items-center bg-secondary/20 rounded-full px-2 py-1">
                   <Button
-                    className="rounded-3xl cursor-pointer"
-                    variant={"secondary"}
-                    size={"icon-sm"}
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 rounded-full hover:bg-white dark:hover:bg-gray-700 transition-colors"
                     onClick={handleDecrement}
                   >
                     -
@@ -175,14 +214,14 @@ export default function Page() {
                         setQuantity(val);
                       }
                     }}
-                    className="w-20 text-center border-none shadow-none focus:shadow-none"
+                    className="w-12 text-center border-none shadow-none focus:ring-0 bg-transparent font-bold"
                     min={1}
                     max={40}
                   />
                   <Button
-                    className="rounded-3xl cursor-pointer"
-                    variant={"secondary"}
-                    size={"icon-sm"}
+                    variant="ghost"
+                    size="icon"
+                    className="size-8 rounded-full hover:bg-white dark:hover:bg-gray-700 transition-colors"
                     onClick={handleIncrement}
                   >
                     +
@@ -192,9 +231,8 @@ export default function Page() {
                 <Sheet open={cartOpen} onOpenChange={setCartOpen}>
                   <SheetTrigger asChild>
                     <Button
-                      className="rounded-3xl cursor-pointer"
+                      className="rounded-full px-8 py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all active:scale-95 flex-1"
                       variant={"default"}
-                      size={"lg"}
                       onClick={handleOrder}
                     >
                       إضافة للسلة
@@ -204,14 +242,16 @@ export default function Page() {
                 </Sheet>
               </div>
             </div>
-          </div>
 
-          <div className="mt-4 p-3 bg-secondary/30 rounded-xl">
-            <p className="text-sm text-muted-foreground">الإجمالي:</p>
-            <p className="text-xl font-bold text-foreground">
-              {(productInfo.price * quantity).toLocaleString()} EGP
-            </p>
+            <div className="mt-6 p-4 bg-secondary/10 rounded-2xl border border-secondary/20 flex justify-between items-center">
+              <p className="text-sm font-medium text-muted-foreground">الإجمالي:</p>
+              <p className="text-2xl font-black text-foreground">
+                {(productInfo.price * quantity).toLocaleString()} <span className="text-sm font-normal">EGP</span>
+              </p>
+            </div>
           </div>
+        </div>
+      </div>
         </div>
       </div>
       <div className="flex gap-5 min-h-screen">
