@@ -40,6 +40,9 @@ const productsData: { [key: string]: { title: string; price: number; image: stri
     description: "This is product 2",
     gallery: [
       "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
       "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"
     ]
   },
@@ -50,7 +53,10 @@ const productsData: { [key: string]: { title: string; price: number; image: stri
     description: "This is product 3",
     gallery: [
       "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp"
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp"
     ]
   },
   "723245582": {
@@ -60,7 +66,10 @@ const productsData: { [key: string]: { title: string; price: number; image: stri
     description: "This is product 4",
     gallery: [
       "https://static.mobilemasr.com/public/categories/683d9ce6ecda7_1748868326.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp"
     ]
   },
   "193295508": {
@@ -69,7 +78,9 @@ const productsData: { [key: string]: { title: string; price: number; image: stri
     image: "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
     description: "This is product 2",
     gallery: [
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
       "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
       "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"
     ]
   },
@@ -80,7 +91,11 @@ const productsData: { [key: string]: { title: string; price: number; image: stri
     description: "This is product 5",
     gallery: [
       "https://static.mobilemasr.com/public/categories/683d9cfd3e58f_1748868349.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp"
+
     ]
   },
   "118925508": {
@@ -90,6 +105,9 @@ const productsData: { [key: string]: { title: string; price: number; image: stri
     description: "This is product 2",
     gallery: [
       "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
       "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"
     ]
   },
@@ -141,7 +159,7 @@ export default function Page() {
       <div className="flex gap-5 max-md:flex-col *:w-1/2 *:max-md:w-full pb-10 max-md:max-h-full max-lg:px-3">
         <div className="gap-3 flex flex-col border rounded-3xl p-0 overflow-hidden bg-white dark:bg-gray-900">
           <div className="relative h-96 w-full bg-secondary/10">
-            <AnimatePresence mode="wait">
+            <AnimatePresence mode="popLayout">
               <motion.img
                 key={mainImage}
                 src={mainImage}
@@ -155,14 +173,14 @@ export default function Page() {
             </AnimatePresence>
           </div>
 
-          <div className="flex gap-3 pb-3 px-3 overflow-x-auto no-scrollbar justify-center">
+          <div className="flex gap-3 overflow-hidden no-scrollbar justify-start">
             {productInfo.gallery?.map((img, index) => (
               <motion.div
-                key={index}
+                key={index+ Math.random()}
                 whileHover={ { scale: 1.05 } }
                 whileTap={ { scale: 0.95 } }
-                className={`flex-shrink-0 size-16 rounded-2xl border-2 transition-all duration-300 cursor-pointer overflow-hidden shadow-sm ${
-                  mainImage === img ? 'border-primary ring-2 ring-primary/20 scale-105' : 'border-transparent bg-secondary/20 hover:border-primary/50'
+                className={`flex-shrink-0 size-16 rounded-2xl border-2 transition-all duration-300 cursor-pointer overflow-hidden p-2 m-2 ${
+                  mainImage === img ? 'border-primary ring-2 ring-primary/20' : 'border-transparent bg-secondary/20 hover:border-primary/50'
                 }`}
                 onClick={() => setMainImage(img)}
               >
@@ -194,7 +212,7 @@ export default function Page() {
             <h2 className="text-sm font-bold text-foreground mb-4">
               عايز اعمل طلب جديد
             </h2>
-            <div className="p-4 border rounded-2xl bg-white dark:bg-gray-800 shadow-sm">
+            <div className="p-4 border rounded-2xl bg-white dark:bg-gray-800 shadow-none">
               <div className="flex flex-wrap gap-4 items-center justify-between">
                 <div className="flex items-center bg-secondary/20 rounded-full px-2 py-1">
                   <Button
@@ -231,7 +249,7 @@ export default function Page() {
                 <Sheet open={cartOpen} onOpenChange={setCartOpen}>
                   <SheetTrigger asChild>
                     <Button
-                      className="rounded-full px-8 py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all active:scale-95 flex-1"
+                      className="rounded-lg w-auto px-8 py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all active:scale-95 "
                       variant={"default"}
                       onClick={handleOrder}
                     >
