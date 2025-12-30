@@ -151,7 +151,11 @@ export default function Page() {
       quantity: quantity,
       image: productInfo.image,
     });
-    setCartOpen(true);
+    // Trigger the cart sidebar from the navbar
+    const cartButton = document.querySelector('[data-cart-trigger]') as HTMLButtonElement;
+    if (cartButton) {
+      cartButton.click();
+    }
   };
 
   return (
@@ -246,18 +250,13 @@ export default function Page() {
                   </Button>
                 </div>
                 
-                <Sheet open={cartOpen} onOpenChange={setCartOpen}>
-                  <SheetTrigger asChild>
-                    <Button
-                      className="rounded-lg w-auto px-8 py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all active:scale-95 "
-                      variant={"default"}
-                      onClick={handleOrder}
-                    >
-                      إضافة للسلة
-                    </Button>
-                  </SheetTrigger>
-                  <SheetProfile />
-                </Sheet>
+                <Button
+                  className="rounded-lg w-auto px-8 py-6 text-lg font-bold shadow-lg hover:shadow-xl transition-all active:scale-95 "
+                  variant={"default"}
+                  onClick={handleOrder}
+                >
+                  إضافة للسلة
+                </Button>
               </div>
             </div>
 

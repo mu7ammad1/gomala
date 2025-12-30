@@ -86,6 +86,7 @@ export function SheetProfile() {
           variant={"outline"}
           size={"icon"}
           className="p-0 shadow-none rounded-full relative"
+          data-cart-trigger
         >
           <LucideShoppingBag absoluteStrokeWidth />
           {totalItems > 0 && (
