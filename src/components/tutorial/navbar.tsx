@@ -1,8 +1,11 @@
 import Link from 'next/link';
-import { Button } from '../ui/button';
 import { LucideShoppingBag } from 'lucide-react';
+import { SheetProfile } from '../auth-button';
+import { useCart } from '@/hooks/use-cart';
 
 export default function Navbar(){
+  const { totalItems } = useCart();
+  
   return (
       <nav className={`w-full `}>
         <p className='bg-teal-600 text-white text-center w-full'>اطلبه تلوقتي و ليك شحن مجاني لاي مكان</p>
@@ -11,13 +14,7 @@ export default function Navbar(){
             <Link href={"/"} className='text-3xl font-bold momo-trust-display-regular'>Gomlla</Link>
           </div>
           <div className='flex gap-3 justify-between items-center text-orange-500'>
-            <Button
-              className="rounded-xl cursor-pointer"
-              variant={"default"}
-              size={"icon"}
-            >
-              <LucideShoppingBag absoluteStrokeWidth />
-            </Button>
+            <SheetProfile />
           </div>
         </div>
       </nav>
