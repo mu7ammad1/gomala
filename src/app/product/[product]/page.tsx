@@ -16,13 +16,21 @@ import {
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/hooks/use-cart";
+import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { SheetProfile } from "@/components/auth-button";
+import { useRef } from "react";
 
-const productsData: { [key: string]: { title: string; price: number; image: string; description: string } } = {
+const productsData: { [key: string]: { title: string; price: number; image: string; description: string; gallery?: string[] } } = {
   "1632548806": {
     title: "Apple IPhone Air With FaceTime - 1TB, 8GB RAM",
     price: 100,
     image: "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-    description: "This is product 1"
+    description: "This is product 1",
+    gallery: [
+      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
+      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp"
+    ]
   },
   "163245508": {
     title: "Apple IPhone 17 Pro Max With FaceTime - 512GB, 12GB RAM",
@@ -68,13 +76,17 @@ export default function Page() {
   const router = useRouter();
   const [quantity, setQuantity] = useState(1);
   const { addToCart } = useCart();
+  const [cartOpen, setCartOpen] = useState(false);
 
   const productInfo = productsData[productId] || {
     title: "Huawei FreeBuds 7i",
     price: 3999,
     image: "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-    description: "Default product"
+    description: "Default product",
+    gallery: ["https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp"]
   };
+
+  const [mainImage, setMainImage] = useState(productInfo.image);
 
   const handleIncrement = () => {
     if (quantity < 40) {
@@ -96,7 +108,7 @@ export default function Page() {
       quantity: quantity,
       image: productInfo.image,
     });
-    router.push("/checkout");
+    setCartOpen(true);
   };
 
   return (
@@ -104,56 +116,27 @@ export default function Page() {
       <div className="flex gap-5 max-md:flex-col *:w-1/2 *:max-md:w-full pb-10 max-md:max-h-full max-lg:px-3">
         <div className=" gap-3 flex flex-col border rounded-3xl p-0">
           <img
-            src={productInfo.image}
+            src={mainImage}
             alt={productInfo.title}
             className="w-full object-contain rounded-t-3xl h-96 aspect-square cursor-pointer"
           />
 
-          <div className="flex gap-3 pb-2 pl-2">
-            <Button
-              className="size-14 rounded-xl p-1.5 cursor-pointer active:scale-90 active:p-2"
-              variant={"outline"}
-              size={"icon-lg"}
-            >
-              <img
-                src={`https://assets-dubaiphone.dubaiphone.net/dp-prod/wp-content/uploads/2025/10/Mobile-1.svg`}
-                alt={productInfo.title}
-                className="w-full h-full object-cover rounded-xl"
-              />
-            </Button>
-            <Button
-              className="size-14 rounded-xl p-1.5 cursor-pointer active:scale-90 active:p-2"
-              variant={"outline"}
-              size={"icon-lg"}
-            >
-              <img
-                src={`https://assets-dubaiphone.dubaiphone.net/dp-prod/wp-content/uploads/2025/11/valuy-15-eng-copy-1.webp`}
-                alt={productInfo.title}
-                className="w-full h-full object-cover rounded-xl"
-              />
-            </Button>
-            <Button
-              className="size-14 rounded-xl p-1.5 cursor-pointer active:scale-90 active:p-2"
-              variant={"outline"}
-              size={"icon-lg"}
-            >
-              <img
-                src={`https://assets-dubaiphone.dubaiphone.net/dp-prod/wp-content/uploads/2025/11/valuy-15-eng-copy-1.webp`}
-                alt={productInfo.title}
-                className="w-full h-full object-cover rounded-xl"
-              />
-            </Button>
-            <Button
-              className="size-14 rounded-xl p-1.5 cursor-pointer active:scale-90 active:p-2"
-              variant={"outline"}
-              size={"icon-lg"}
-            >
-              <img
-                src={`https://assets-dubaiphone.dubaiphone.net/dp-prod/wp-content/uploads/2025/11/valuy-15-eng-copy-1.webp`}
-                alt={productInfo.title}
-                className="w-full h-full object-cover rounded-xl"
-              />
-            </Button>
+          <div className="flex gap-3 pb-2 pl-2 overflow-x-auto">
+            {productInfo.gallery?.map((img, index) => (
+              <Button
+                key={index}
+                className={`size-14 rounded-xl p-1.5 cursor-pointer active:scale-90 transition-all ${mainImage === img ? 'ring-2 ring-primary' : ''}`}
+                variant={"outline"}
+                size={"icon-lg"}
+                onClick={() => setMainImage(img)}
+              >
+                <img
+                  src={img}
+                  alt={`${productInfo.title} ${index}`}
+                  className="w-full h-full object-cover rounded-xl"
+                />
+              </Button>
+            ))}
           </div>
         </div>
 
@@ -205,14 +188,20 @@ export default function Page() {
                     +
                   </Button>
                 </div>
-                <Button
-                  className="rounded-3xl cursor-pointer"
-                  variant={"default"}
-                  size={"lg"}
-                  onClick={handleOrder}
-                >
-                  إضافة للسلة
-                </Button>
+                
+                <Sheet open={cartOpen} onOpenChange={setCartOpen}>
+                  <SheetTrigger asChild>
+                    <Button
+                      className="rounded-3xl cursor-pointer"
+                      variant={"default"}
+                      size={"lg"}
+                      onClick={handleOrder}
+                    >
+                      إضافة للسلة
+                    </Button>
+                  </SheetTrigger>
+                  <SheetProfile />
+                </Sheet>
               </div>
             </div>
           </div>
