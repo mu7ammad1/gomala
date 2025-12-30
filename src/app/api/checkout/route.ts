@@ -10,12 +10,8 @@ export async function POST(request: Request) {
     console.log('📦 البيانات المستلمة:', body);
 
     const { 
-      productId, 
-      productName, 
-      productDescription,
-      quantity, 
-      price, 
-      discountPrice,
+      items,
+      totalPrice,
       customerName, 
       customerPhone, 
       customerEmail,
@@ -25,32 +21,16 @@ export async function POST(request: Request) {
     } = body;
 
     // التحقق من البيانات الأساسية
-    if (!productId || !productName || !quantity || !price) {
+    if (!items || !Array.isArray(items) || items.length === 0 || !totalPrice) {
       return NextResponse.json(
-        { error: "جميع الحقول الأساسية مطلوبة: productId, productName, quantity, price" },
+        { error: "بيانات السلة مطلوبة" },
         { status: 400 }
       );
     }
-
-    // التحقق من الكمية
-    if (quantity < 1 || quantity > 40) {
-      return NextResponse.json(
-        { error: "الكمية يجب أن تكون بين 1 و 40" },
-        { status: 400 }
-      );
-    }
-
-    // حساب السعر الإجمالي
-    const totalPrice = quantity * price;
 
     const orderData = {
-      product_id: parseInt(productId),
-      product_name: String(productName),
-      product_description: productDescription || null,
-      quantity: parseInt(quantity),
-      price: parseInt(price),
-      discount_price: discountPrice ? parseInt(discountPrice) : null,
-      total_price: totalPrice,
+      items: items, // الحقل الجديد لتخزين مصفوفة المنتجات
+      total_price: parseInt(totalPrice),
       customer_name: customerName || null,
       customer_phone: customerPhone || null,
       customer_email: customerEmail || null,

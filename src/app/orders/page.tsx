@@ -118,17 +118,14 @@ export default function OrdersPage() {
                   <div className="flex-1" dir="rtl">
                     <div className="flex items-center justify-end gap-3 mb-2">
                       <h3 className="text-2xl font-bold text-right">
-                        {order.product_name}
+                        {order.items && Array.isArray(order.items) 
+                          ? `${order.items[0].name} ${order.items.length > 1 ? `و ${order.items.length - 1} منتجات أخرى` : ''}`
+                          : order.product_name}
                       </h3>
                       <span className="bg-[#A5B68D] text-white px-3 py-1 rounded-full text-sm font-bold">
                         #{order.order_number}
                       </span>
                     </div>
-                    {order.product_description && (
-                      <p className="text-gray-600 text-right">
-                        {order.product_description}
-                      </p>
-                    )}
                   </div>
 
                   <div className="flex gap-2">
@@ -153,17 +150,17 @@ export default function OrdersPage() {
 
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4 text-sm">
                   <div className="bg-gray-50 p-3 rounded-lg" dir="rtl">
-                    <p className="text-gray-600 text-right mb-1">الكمية</p>
-                    <p className="font-bold text-xl text-right">{order.quantity}</p>
+                    <p className="text-gray-600 text-right mb-1">عدد المنتجات</p>
+                    <p className="font-bold text-xl text-right">
+                      {order.items && Array.isArray(order.items) 
+                        ? order.items.reduce((sum: number, item: any) => sum + item.quantity, 0)
+                        : order.quantity}
+                    </p>
                   </div>
-                  <div className="bg-gray-50 p-3 rounded-lg" dir="rtl">
-                    <p className="text-gray-600 text-right mb-1">السعر</p>
-                    <p className="font-bold text-xl text-right">{order.price} جنيه</p>
-                  </div>
-                  <div className="bg-orange-50 p-3 rounded-lg col-span-2" dir="rtl">
-                    <p className="text-gray-600 text-right mb-1">الإجمالي</p>
+                  <div className="bg-orange-50 p-3 rounded-lg col-span-3" dir="rtl">
+                    <p className="text-gray-600 text-right mb-1">الإجمالي النهائي</p>
                     <p className="font-bold text-2xl text-orange-600 text-right">
-                      {order.total_price} جنيه
+                      {order.total_price.toLocaleString()} جنيه
                     </p>
                   </div>
                 </div>

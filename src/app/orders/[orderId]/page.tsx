@@ -229,37 +229,62 @@ export default function SingleOrderPage({
 
         {/* Order Details */}
         <div className="grid md:grid-cols-2 gap-8 mb-8">
-          {/* Product Info */}
+          {/* Products List */}
           <div className="bg-white rounded-2xl shadow-lg p-8" dir="rtl">
-            <h2 className="text-2xl font-bold mb-6 text-right">تفاصيل المنتج</h2>
+            <h2 className="text-2xl font-bold mb-6 text-right">المنتجات المطلوبة</h2>
             <div className="space-y-4">
-              <div className="border-b pb-4">
-                <p className="text-gray-600 text-sm text-right">اسم المنتج</p>
-                <p className="font-bold text-xl text-right">{order.product_name}</p>
-              </div>
+              {order.items && Array.isArray(order.items) ? (
+                order.items.map((item: any, index: number) => (
+                  <div key={index} className="flex gap-4 border-b pb-4 items-center">
+                    <img 
+                      src={item.image} 
+                      alt={item.name} 
+                      className="size-20 object-contain rounded-lg bg-gray-50"
+                    />
+                    <div className="flex-1">
+                      <p className="font-bold text-lg text-right">{item.name}</p>
+                      <div className="flex justify-between items-center mt-1">
+                        <p className="text-gray-600 text-sm">
+                          الكمية: {item.quantity}
+                        </p>
+                        <p className="font-bold text-orange-600">
+                          {item.price.toLocaleString()} جنيه
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <div className="border-b pb-4">
+                    <p className="text-gray-600 text-sm text-right">اسم المنتج</p>
+                    <p className="font-bold text-xl text-right">{order.product_name}</p>
+                  </div>
 
-              {order.product_description && (
-                <div className="border-b pb-4">
-                  <p className="text-gray-600 text-sm text-right">الوصف</p>
-                  <p className="text-right">{order.product_description}</p>
-                </div>
+                  {order.product_description && (
+                    <div className="border-b pb-4">
+                      <p className="text-gray-600 text-sm text-right">الوصف</p>
+                      <p className="text-right">{order.product_description}</p>
+                    </div>
+                  )}
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-gray-600 text-sm text-right">الكمية</p>
+                      <p className="font-bold text-2xl text-right">{order.quantity}</p>
+                    </div>
+                    <div className="bg-gray-50 p-4 rounded-lg">
+                      <p className="text-gray-600 text-sm text-right">السعر</p>
+                      <p className="font-bold text-2xl text-right">{order.price} جنيه</p>
+                    </div>
+                  </div>
+                </>
               )}
 
-              <div className="grid grid-cols-2 gap-4">
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-gray-600 text-sm text-right">الكمية</p>
-                  <p className="font-bold text-2xl text-right">{order.quantity}</p>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-lg">
-                  <p className="text-gray-600 text-sm text-right">السعر</p>
-                  <p className="font-bold text-2xl text-right">{order.price} جنيه</p>
-                </div>
-              </div>
-
               <div className="bg-orange-50 p-6 rounded-lg border-2 border-orange-200">
-                <p className="text-gray-600 text-sm text-right mb-2">الإجمالي</p>
+                <p className="text-gray-600 text-sm text-right mb-2">الإجمالي النهائي</p>
                 <p className="font-bold text-3xl text-orange-600 text-right">
-                  {order.total_price} جنيه
+                  {order.total_price.toLocaleString()} جنيه
                 </p>
               </div>
             </div>
