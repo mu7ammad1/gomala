@@ -155,14 +155,14 @@ export default function Page() {
             </AnimatePresence>
           </div>
 
-          <div className="flex gap-3 pb-3 px-3 overflow-x-auto no-scrollbar">
+          <div className="flex gap-3 pb-3 px-3 overflow-x-auto no-scrollbar justify-center">
             {productInfo.gallery?.map((img, index) => (
               <motion.div
                 key={index}
                 whileHover={ { scale: 1.05 } }
                 whileTap={ { scale: 0.95 } }
-                className={`flex-shrink-0 size-16 rounded-2xl border-2 transition-colors cursor-pointer overflow-hidden ${
-                  mainImage === img ? 'border-primary shadow-md' : 'border-transparent bg-secondary/20 hover:border-primary/50'
+                className={`flex-shrink-0 size-16 rounded-2xl border-2 transition-all duration-300 cursor-pointer overflow-hidden shadow-sm ${
+                  mainImage === img ? 'border-primary ring-2 ring-primary/20 scale-105' : 'border-transparent bg-secondary/20 hover:border-primary/50'
                 }`}
                 onClick={() => setMainImage(img)}
               >
@@ -252,9 +252,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-        </div>
-      </div>
-      <div className="flex gap-5 min-h-screen">
+      <div className="flex gap-5 min-h-screen mt-10">
         <section className="w-full flex flex-col gap-3 px-3 rounded-3xl">
           <ul style={{ listStyle: "none" }}>
             <li
