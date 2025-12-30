@@ -248,7 +248,7 @@ export default function SingleOrderPage({
                           الكمية: {item.quantity}
                         </p>
                         <p className="font-bold text-orange-600">
-                          {item.price.toLocaleString()} جنيه
+                          {item.price ? item.price.toLocaleString() : 0} جنيه
                         </p>
                       </div>
                     </div>

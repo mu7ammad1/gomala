@@ -160,7 +160,7 @@ export default function OrdersPage() {
                   <div className="bg-orange-50 p-3 rounded-lg col-span-3" dir="rtl">
                     <p className="text-gray-600 text-right mb-1">الإجمالي النهائي</p>
                     <p className="font-bold text-2xl text-orange-600 text-right">
-                      {order.total_price.toLocaleString()} جنيه
+                      {order.total_price ? order.total_price.toLocaleString() : 0} جنيه
                     </p>
                   </div>
                 </div>

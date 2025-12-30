@@ -1,28 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import { Button } from "./ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
-import { createClient } from "@/lib/supabase/server";
 import { LogoutButton } from "./logout-button";
 import { ThemeSwitcher } from "./theme-switcher";
 import { LucideShoppingBag, LucideUser, LucideX, LucideTrash2 } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 
-export async function AuthButton() {
-  const supabase = await createClient();
-
-  // You can also use getUser() which will be slower.
-  const { data } = await supabase.auth.getClaims();
-
-  const user = data?.claims;
-
-  return user ? (
-    <div className="flex items-center gap-4">
-      <SheetProfile />
-      <SheetDemo />
-    </div>
-  ) : (
+export function AuthButton() {
+  return (
     <div className="flex gap-2">
       <Button asChild size="lg" variant={"secondary"}>
         <Link href="/auth/login">تسجيل دخول</Link>

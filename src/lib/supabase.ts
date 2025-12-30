@@ -29,27 +29,26 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
 export interface Order {
   id: string;
   order_number: number;
-  product_id: number;
-  product_name: string;
+  product_id?: number;
+  product_name?: string;
   product_description?: string;
-  quantity: number;
-  price: number;
+  quantity?: number;
+  price?: number;
   discount_price?: number;
   total_price: number;
-  customer_name?: string;
-  customer_phone?: string;
-  customer_email?: string;
-  customer_address?: string;
-  customer_city?: string;
-  customer_notes?: string;
-  status: 'pending' | 'confirmed' | 'shipping' | 'delivered' | 'cancelled';
-  payment_method?: 'cash' | 'card' | 'online';
-  payment_status: 'unpaid' | 'paid' | 'refunded';
+  customer_name: string | null;
+  customer_phone: string | null;
+  customer_email: string | null;
+  customer_address: string | null;
+  customer_city: string | null;
+  customer_notes: string | null;
+  status: string;
+  payment_status: string;
   created_at: string;
-  updated_at: string;
-  shipped_at?: string;
-  delivered_at?: string;
-  confirmed_at?: string;
+  confirmed_at: string | null;
+  shipped_at: string | null;
+  delivered_at: string | null;
+  items?: any[];
 }
 
 // اختبار الاتصال
