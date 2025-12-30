@@ -29,7 +29,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
   imageUrl,
 }) => {
   return (
-    <Card className="p-0 rounded-2xl shadow-none w-full h-full gap-0">
+    <Card className="p-0 rounded-2xl shadow-none h-full gap-0">
       <CardContent className="p-0 rounded-t-2xl h-full relative bg-secondary/10 justify-center items-center flex">
         <Button
           className="rounded-xl cursor-pointer absolute top-2 right-12 z-50"

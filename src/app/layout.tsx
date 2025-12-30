@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`rubik-700 antialiased bg-background max-w-[1440px] mx-auto transition-all duration-300`}
+        className={`rubik-700 antialiased bg-background w-full mx-auto transition-all duration-300`}
       >
         <ThemeProvider
           attribute="class"

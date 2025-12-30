@@ -93,6 +93,7 @@ export default function EventCard() {
       opts={{
         align: "center",
         loop: true,
+        dragFree: true
       }}
       plugins={[
         Autoplay({
@@ -101,15 +102,15 @@ export default function EventCard() {
           stopOnMouseEnter: true, // pause on hover (optional)
         }),
       ]}
-      className="w-full max-w-7xl"
+      className="w-full max-w-full h-full"
     >
-      <CarouselContent className="w-full gap-0.5">
+      <CarouselContent className="w-full -ml-[4px] h-full">
         {EventCards.map((category) => (
           <CarouselItem
             key={category.id}
-            className="basis-full flex justify-center items-center"
+            className="basis-full flex justify-center items-center h-full"
           >
-            <div className="rounded-2xl shadow-none w-full p-0">
+            <div className="rounded-2xl shadow-none w-full p-0 h-full">
               <img
                 src={category?.image}
                 alt={category?.hover}

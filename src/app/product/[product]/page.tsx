@@ -225,44 +225,7 @@ export default function Page() {
         </div>
       </div>
       <div className="flex gap-5 min-h-screen">
-        <BlockDetails />
-      </div>
-    </div>
-  );
-}
-
-function BlockDetails() {
-  return (
-    <Tabs defaultValue="item-1" className="w-full items-center">
-      <TabsList className="bg-white/0 gap-3 w-full ">
-        <TabsTrigger
-          value="item-1"
-          className="shadow-none data-[state=active]:shadow-none data-[state=active]:border-none data-[state=active]:bg-primary data-[state=active]:text-secondary dark:data-[state=active]:bg-primary bg-secondary text-sm p-5 rounded-xl"
-        >
-          لمحة عامة
-        </TabsTrigger>
-        <TabsTrigger
-          value="item-2"
-          className="shadow-none data-[state=active]:shadow-none data-[state=active]:border-none data-[state=active]:bg-primary data-[state=active]:text-secondary dark:data-[state=active]:bg-primary bg-secondary text-sm p-5 rounded-xl"
-        >
-          المواصفات العامة
-        </TabsTrigger>
-
-        <TabsTrigger
-          value="item-3"
-          className="shadow-none data-[state=active]:shadow-none data-[state=active]:border-none data-[state=active]:bg-primary data-[state=active]:text-secondary dark:data-[state=active]:bg-primary bg-secondary text-sm p-5 rounded-xl"
-        >
-          اراء المشترين
-        </TabsTrigger>
-        <TabsTrigger
-          value="item-4"
-          className="shadow-none data-[state=active]:shadow-none data-[state=active]:border-none data-[state=active]:bg-primary data-[state=active]:text-secondary dark:data-[state=active]:bg-primary bg-secondary text-sm p-5 rounded-xl"
-        >
-          ما في الطلب
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="item-1" className="w-full h-screen">
-        <section className="w-full flex flex-col gap-0 rounded-3xl">
+        <section className="w-full flex flex-col gap-3 px-3 rounded-3xl">
           <ul style={{ listStyle: "none" }}>
             <li
               className="card"
@@ -326,14 +289,11 @@ function BlockDetails() {
             </li>
           </ul>
         </section>
-      </TabsContent>
-      <TabsContent value="item-2" className="*:w-1/2 w-full">
-        <TableDemo />
-      </TabsContent>
-      <TabsContent value="item-3">Change your password here.</TabsContent>
-    </Tabs>
+      </div>
+    </div>
   );
 }
+
 
 const Products = [
   {
