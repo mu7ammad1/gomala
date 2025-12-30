@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { LucideRat, LucideShoppingBag, LucideStar } from "lucide-react";
 import { Button } from "../ui/button";
+import { useCart } from "@/hooks/use-cart";
 
 interface ProductCardProps {
   id: number;
@@ -28,6 +29,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
   rate,
   imageUrl,
 }) => {
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart({
+      id: id.toString(),
+      name: title,
+      price: parseFloat(price.replace(/,/g, "")),
+      quantity: 1,
+      image: imageUrl,
+    });
+  };
+
   return (
     <Card className="p-0 rounded-2xl shadow-none h-full gap-0">
       <CardContent className="p-0 rounded-t-2xl h-full relative bg-secondary/10 justify-center items-center flex">
@@ -42,6 +55,7 @@ const ProductCard: React.FC<ProductCardProps> = ({
           className="rounded-xl cursor-pointer absolute top-2 right-2 z-50"
           variant={"secondary"}
           size={"icon-sm"}
+          onClick={handleAddToCart}
         >
           <LucideShoppingBag absoluteStrokeWidth />
         </Button>

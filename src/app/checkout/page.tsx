@@ -1,26 +1,18 @@
 "use client";
 
 import { useState, useEffect, Suspense } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
+import { useCart } from "@/hooks/use-cart";
 
 function CheckoutContent() {
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const { cart, totalPrice, clearCart } = useCart();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-
-  const productId = searchParams.get("productId") || "";
-  const productName = searchParams.get("productName") || "";
-  const productDescription = searchParams.get("productDescription") || "";
-  const price = parseInt(searchParams.get("price") || "0");
-  const quantity = parseInt(searchParams.get("quantity") || "1");
-  const image = searchParams.get("image") || "";
-
-  const totalPrice = price * quantity;
 
   const [formData, setFormData] = useState({
     customerName: "",
@@ -40,6 +32,8 @@ function CheckoutContent() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (cart.length === 0) return;
+    
     setLoading(true);
     setError("");
 
@@ -56,11 +50,8 @@ function CheckoutContent() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          productId,
-          productName,
-          productDescription,
-          quantity,
-          price,
+          items: cart,
+          totalPrice,
           ...formData,
         }),
       });
@@ -75,6 +66,7 @@ function CheckoutContent() {
       const data = await response.json();
 
       if (data.success && data.order) {
+        clearCart();
         const orderId = data.order.order_number || data.order.id;
         if (orderId) {
           router.push(`/orders/${orderId}`);
@@ -92,12 +84,12 @@ function CheckoutContent() {
     }
   };
 
-  if (!productId) {
+  if (cart.length === 0) {
     return (
-      <div className="min-h-screen flex flex-col justify-center items-center gap-4">
-        <p className="text-xl">لا يوجد منتج محدد</p>
+      <div className="min-h-screen flex flex-col justify-center items-center gap-4" dir="rtl">
+        <p className="text-xl">سلة التسوق فارغة</p>
         <Link href="/">
-          <Button>العودة للصفحة الرئيسية</Button>
+          <Button>العودة للتسوق</Button>
         </Link>
       </div>
     );
@@ -116,41 +108,38 @@ function CheckoutContent() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-8">
-          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border">
-            <h2 className="text-xl font-bold mb-4">تفاصيل المنتج</h2>
+          <div className="bg-white dark:bg-gray-800 p-6 rounded-2xl shadow-sm border h-fit">
+            <h2 className="text-xl font-bold mb-4">ملخص السلة</h2>
             
-            {image && (
-              <img
-                src={image}
-                alt={productName}
-                className="w-full h-48 object-contain rounded-xl mb-4 bg-gray-100"
-              />
-            )}
+            <div className="space-y-4 max-h-[400px] overflow-y-auto mb-4 pr-1">
+              {cart.map((item) => (
+                <div key={item.id} className="flex gap-3 border-b pb-3">
+                  <img
+                    src={item.image}
+                    alt={item.name}
+                    className="size-16 object-contain rounded-lg bg-gray-50"
+                  />
+                  <div className="flex-1">
+                    <p className="text-sm font-medium line-clamp-1">{item.name}</p>
+                    <div className="flex justify-between items-center mt-1">
+                      <p className="text-xs text-muted-foreground">
+                        {item.quantity} × {item.price.toLocaleString()} EGP
+                      </p>
+                      <p className="text-sm font-bold">
+                        {(item.price * item.quantity).toLocaleString()} EGP
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
             
-            <div className="space-y-3">
-              <div>
-                <p className="text-sm text-muted-foreground">اسم المنتج</p>
-                <p className="font-medium">{productName}</p>
-              </div>
-              
-              <div className="flex justify-between">
-                <div>
-                  <p className="text-sm text-muted-foreground">السعر</p>
-                  <p className="font-medium">{price.toLocaleString()} EGP</p>
-                </div>
-                <div>
-                  <p className="text-sm text-muted-foreground">الكمية</p>
-                  <p className="font-medium">{quantity}</p>
-                </div>
-              </div>
-              
-              <div className="pt-3 border-t">
-                <div className="flex justify-between items-center">
-                  <p className="text-lg font-bold">الإجمالي</p>
-                  <p className="text-2xl font-bold text-rose-500">
-                    {totalPrice.toLocaleString()} EGP
-                  </p>
-                </div>
+            <div className="pt-3 border-t">
+              <div className="flex justify-between items-center">
+                <p className="text-lg font-bold">الإجمالي النهائي</p>
+                <p className="text-2xl font-bold text-rose-500">
+                  {totalPrice.toLocaleString()} EGP
+                </p>
               </div>
             </div>
           </div>
@@ -257,16 +246,6 @@ function CheckoutContent() {
                   "تأكيد الطلب"
                 )}
               </Button>
-
-              <Link href={`/product/${productId}`} className="block">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="w-full rounded-xl"
-                >
-                  العودة للمنتج
-                </Button>
-              </Link>
             </form>
           </div>
         </div>

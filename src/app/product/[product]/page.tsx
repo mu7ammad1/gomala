@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Input } from "@/components/ui/input";
+import { useCart } from "@/hooks/use-cart";
 
 const productsData: { [key: string]: { title: string; price: number; image: string; description: string } } = {
   "1632548806": {
@@ -66,6 +67,7 @@ export default function Page() {
   const productId = params.product as string;
   const router = useRouter();
   const [quantity, setQuantity] = useState(1);
+  const { addToCart } = useCart();
 
   const productInfo = productsData[productId] || {
     title: "Huawei FreeBuds 7i",
@@ -87,15 +89,14 @@ export default function Page() {
   };
 
   const handleOrder = () => {
-    const params = new URLSearchParams({
-      productId: productId,
-      productName: productInfo.title,
-      productDescription: productInfo.description,
-      price: productInfo.price.toString(),
-      quantity: quantity.toString(),
-      image: productInfo.image
+    addToCart({
+      id: productId,
+      name: productInfo.title,
+      price: productInfo.price,
+      quantity: quantity,
+      image: productInfo.image,
     });
-    router.push(`/checkout?${params.toString()}`);
+    router.push("/checkout");
   };
 
   return (
