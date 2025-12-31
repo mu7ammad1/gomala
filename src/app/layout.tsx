@@ -23,6 +23,8 @@ export default function RootLayout({
         className={`rubik-700 antialiased bg-background w-full mx-auto transition-all duration-300`}
       >
         <GoogleTagManager gtmId="GTM-5K9S9CLK" />
+        <GoogleTagManager gtmId="GTM-EF3FBJQJ5M" />
+
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
