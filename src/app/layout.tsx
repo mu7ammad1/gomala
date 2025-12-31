@@ -3,6 +3,7 @@ import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import Navbar from "@/components/tutorial/navbar";
 import { Toaster } from "@/components/ui/sonner";
+import { GoogleTagManager } from '@next/third-parties/google';
 
 export const metadata: Metadata = {
   title: "Gomlla - جـمـلـة سهلتها عليك و سهلتها على عميلك",
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body
         className={`rubik-700 antialiased bg-background w-full mx-auto transition-all duration-300`}
       >
+        <GoogleTagManager gtmId="GTM-5K9S9CLK" />
         <ThemeProvider
           attribute="class"
           defaultTheme="system"
