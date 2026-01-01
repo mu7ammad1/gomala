@@ -45,8 +45,7 @@ export async function PATCH(request: Request) {
       .from('orders')
       .update({ status })
       .eq('id', id)
-      .select()
-      .single();
+      .select();
 
     if (error) {
       console.error("❌ خطأ في تحديث الحالة:", error);
@@ -56,9 +55,17 @@ export async function PATCH(request: Request) {
       );
     }
 
+    if (!data || data.length === 0) {
+      console.error("❌ لم يتم العثور على الطلب لتحديثه");
+      return NextResponse.json(
+        { success: false, error: "الطلب غير موجود" },
+        { status: 404 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
-      order: data
+      order: data[0]
     });
   } catch (err: any) {
     console.error("❌ خطأ عام:", err);
