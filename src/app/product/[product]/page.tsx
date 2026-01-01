@@ -194,16 +194,18 @@ export default function Page() {
         <div className="gap-3 flex flex-col border rounded-3xl p-0 overflow-hidden bg-white dark:bg-gray-900">
           <div className="relative h-96 w-full bg-secondary/10">
             <AnimatePresence mode="popLayout">
-              <motion.img
-                key={mainImage}
-                src={mainImage}
-                alt={productInfo.title}
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-                className="w-full h-full object-contain cursor-pointer"
-              />
+              {mainImage && (
+                <motion.img
+                  key={mainImage}
+                  src={mainImage}
+                  alt={productInfo.title}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="w-full h-full object-contain cursor-pointer"
+                />
+              )}
             </AnimatePresence>
           </div>
           <div className="flex gap-3 overflow-hidden no-scrollbar justify-start">

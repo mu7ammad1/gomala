@@ -43,14 +43,26 @@ export default function OrdersAdminPage() {
     try {
       setLoading(true);
       const response = await fetch("/api/orders");
-      const data = await response.json();
+      
+      // Check if response is ok and has content
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      
+      const text = await response.text();
+      if (!text) {
+        setOrders([]);
+        return;
+      }
+
+      const data = JSON.parse(text);
       if (data.success) {
         setOrders(data.orders);
       } else {
         toast.error("فشل تحميل الطلبات");
       }
     } catch (err) {
-      console.error(err);
+      console.error("خطأ في جلب الطلبات:", err);
       toast.error("حدث خطأ في الاتصال");
     } finally {
       setLoading(false);
