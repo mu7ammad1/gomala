@@ -3,7 +3,7 @@ import { ThemeProvider } from "next-themes";
 import "./globals.css";
 import Navbar from "@/components/tutorial/navbar";
 import { Toaster } from "@/components/ui/sonner";
-import { GoogleTagManager } from '@next/third-parties/google';
+import { GoogleTagManager } from "@next/third-parties/google";
 
 export const metadata: Metadata = {
   title: "Gomlla - جـمـلـة سهلتها عليك و سهلتها على عميلك",
@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 };
 
 import { CartProvider } from "@/hooks/use-cart";
+import { Apple, LucideShoppingCart } from "lucide-react";
 
 export default function RootLayout({
   children,
@@ -20,7 +21,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`rubik-700 antialiased bg-background w-full mx-auto transition-all duration-300`}
+        className={`rubik-700 antialiased bg-background w-full transition-all duration-300`}
       >
         <GoogleTagManager gtmId="GTM-5K9S9CLK" />
         <GoogleTagManager gtmId="GTM-EF3FBJQJ5M" />
@@ -34,10 +35,15 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <CartProvider>
-            <section className="w-full justify-center items-center flex flex-col">
+            <section className="w-full justify-center items-center flex flex-col mx-auto">
               <Navbar />
               {children}
               <Toaster />
+              <div
+                className={`size-12 bg-primary rounded-full fixed bottom-10 right-10 justify-center items-center flex border-5 border-secondary animate-bounce z-[5000]`}
+              >
+                <Apple className="size-6 text-white"/>
+              </div>
             </section>
           </CartProvider>
         </ThemeProvider>
