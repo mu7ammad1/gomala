@@ -183,7 +183,7 @@ export default function OrdersAdminPage() {
                         <div className="flex items-center gap-2">
                           <Select
                             defaultValue={order.status}
-                            onValueChange={(val) => updateStatus(order.id, val)}
+                            onValueChange={(val: string) => updateStatus(order.id, val)}
                           >
                             <SelectTrigger className="w-[140px] rounded-full h-9 text-xs font-bold border-2">
                               <div className="flex items-center gap-2">
