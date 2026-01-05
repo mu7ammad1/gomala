@@ -32,7 +32,8 @@ export async function GET() {
 
 export async function PATCH(request: Request) {
   try {
-    const { id, status } = await request.json();
+    const body = await request.json();
+    const { id, status } = body;
 
     if (!id || !status) {
       return NextResponse.json(
@@ -41,11 +42,23 @@ export async function PATCH(request: Request) {
       );
     }
 
-    // تحديث البيانات باستخدام رقم الطلب (order_number) مباشرة كما طلب المستخدم
+    console.log(`📝 محاولة تحديث الطلب: { id: ${id}, status: '${status}' }`);
+
+    // نحول المعرف لرقم في حال تم إرساله كنص لضمان التوافق مع Postgres
+    const orderNumber = parseInt(String(id));
+    
+    if (isNaN(orderNumber)) {
+      return NextResponse.json(
+        { success: false, error: "رقم الطلب غير صالح" },
+        { status: 400 }
+      );
+    }
+
+    // تحديث مباشر باستخدام order_number
     const { data, error } = await supabase
       .from('orders')
-      .update({ status })
-      .eq('order_number', id)
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('order_number', orderNumber)
       .select();
 
     if (error) {
@@ -57,21 +70,24 @@ export async function PATCH(request: Request) {
     }
 
     if (!data || data.length === 0) {
-      console.error("❌ لم يتم العثور على الطلب برقم:", id);
+      console.error("❌ لم يتم العثور على الطلب برقم:", orderNumber);
       return NextResponse.json(
-        { success: false, error: "الطلب غير موجود برقم: " + id },
+        { success: false, error: `الطلب رقم #${orderNumber} غير موجود` },
         { status: 404 }
       );
     }
 
+    console.log(`✅ تم تحديث الطلب #${orderNumber} بنجاح إلى ${status}`);
+
     return NextResponse.json({
       success: true,
-      order: data[0]
+      order: data[0],
+      message: `تم تحديث حالة الطلب #${orderNumber} بنجاح`
     });
   } catch (err: any) {
-    console.error("❌ خطأ عام:", err);
+    console.error("❌ خطأ عام في API:", err);
     return NextResponse.json(
-      { success: false, error: "حدث خطأ غير متوقع" },
+      { success: false, error: "حدث خطأ غير متوقع: " + err.message },
       { status: 500 }
     );
   }

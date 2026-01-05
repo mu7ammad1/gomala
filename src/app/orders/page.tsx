@@ -12,9 +12,7 @@ import {
   LucideClock,
   LucideXCircle,
   LucideLock,
-  LucideShoppingBag,
   LucideLayoutDashboard,
-  LucideCalendar,
   LucideFilter,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -53,15 +51,9 @@ export default function OrdersAdminPage() {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       
-      const text = await response.text();
-      if (!text) {
-        setOrders([]);
-        return;
-      }
-
-      const data = JSON.parse(text);
+      const data = await response.json();
       if (data.success) {
-        setOrders(data.orders);
+        setOrders(data.orders || []);
       } else {
         toast.error("فشل تحميل الطلبات");
       }
@@ -73,9 +65,9 @@ export default function OrdersAdminPage() {
     }
   };
 
-  const updateStatus = async (orderNumber: string, newStatus: string) => {
+  const updateStatus = async (orderNumber: number, newStatus: string) => {
+    const toastId = toast.loading(`جاري تحديث الطلب #${orderNumber}...`);
     try {
-      console.log("Updating order number:", orderNumber, "to", newStatus);
       const response = await fetch("/api/orders", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
@@ -85,13 +77,13 @@ export default function OrdersAdminPage() {
       const data = await response.json();
       if (data.success) {
         setOrders(prev => prev.map(o => o.order_number === orderNumber ? { ...o, status: newStatus } : o));
-        toast.success("تم تحديث حالة الطلب بنجاح");
+        toast.success(`تم تحديث الطلب #${orderNumber} بنجاح`, { id: toastId });
       } else {
-        toast.error(data.error || "فشل تحديث الحالة");
+        toast.error(data.error || "فشل تحديث الحالة", { id: toastId });
       }
     } catch (err) {
       console.error(err);
-      toast.error("حدث خطأ أثناء التحديث");
+      toast.error("حدث خطأ أثناء التحديث", { id: toastId });
     }
   };
 
@@ -126,17 +118,6 @@ export default function OrdersAdminPage() {
       case "delivered": return <LucideCheckCircle className="text-emerald-500" />;
       case "cancelled": return <LucideXCircle className="text-rose-500" />;
       default: return <LucidePackage className="text-gray-500" />;
-    }
-  };
-
-  const getStatusLabel = (status: string) => {
-    switch (status) {
-      case "pending": return "قيد الانتظار";
-      case "confirmed": return "مؤكد";
-      case "shipping": return "جاري الشحن";
-      case "delivered": return "تم التوصيل";
-      case "cancelled": return "ملغي";
-      default: return status;
     }
   };
 
@@ -178,7 +159,6 @@ export default function OrdersAdminPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 -mt-12">
-        {/* Statistics Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white p-6 rounded-3xl shadow-sm border text-center">
             <div className="text-gray-400 text-sm mb-1">اليوم</div>
@@ -245,11 +225,10 @@ export default function OrdersAdminPage() {
                       <tr key={order.id} className="hover:bg-gray-50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="font-mono font-bold text-primary">#{order.order_number}</div>
-                          <div className="text-[10px] text-gray-400 truncate max-w-[100px]">{order.id}</div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="font-bold">{order.customer_name}</div>
-                          <div className="text-xs text-gray-400">{order.customer_phone}</div>
+                          <div className="font-bold">{order.customer_name || "عميل مجهول"}</div>
+                          <div className="text-xs text-gray-400">{order.customer_phone || "بدون هاتف"}</div>
                         </td>
                         <td className="px-6 py-4">
                           <div className="text-xs">
