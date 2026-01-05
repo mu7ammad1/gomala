@@ -75,7 +75,7 @@ export default function OrdersAdminPage() {
 
   const updateStatus = async (orderId: string, newStatus: string) => {
     try {
-      // Use the correct ID from the database
+      console.log("Updating order:", orderId, "to", newStatus);
       const response = await fetch("/api/orders", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },

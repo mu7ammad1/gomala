@@ -44,13 +44,13 @@ export async function PATCH(request: Request) {
     const { data, error } = await supabase
       .from('orders')
       .update({ status })
-      .eq('id', id)
+      .filter('id', 'eq', id)
       .select();
 
     if (error) {
       console.error("❌ خطأ في تحديث الحالة:", error);
       return NextResponse.json(
-        { success: false, error: "فشل تحديث الحالة" },
+        { success: false, error: "فشل تحديث الحالة: " + error.message },
         { status: 500 }
       );
     }
