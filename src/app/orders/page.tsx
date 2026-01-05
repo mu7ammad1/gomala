@@ -73,18 +73,18 @@ export default function OrdersAdminPage() {
     }
   };
 
-  const updateStatus = async (orderId: string, newStatus: string) => {
+  const updateStatus = async (orderNumber: string, newStatus: string) => {
     try {
-      console.log("Updating order:", orderId, "to", newStatus);
+      console.log("Updating order number:", orderNumber, "to", newStatus);
       const response = await fetch("/api/orders", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: orderId, status: newStatus }),
+        body: JSON.stringify({ id: orderNumber, status: newStatus }),
       });
       
       const data = await response.json();
       if (data.success) {
-        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+        setOrders(prev => prev.map(o => o.order_number === orderNumber ? { ...o, status: newStatus } : o));
         toast.success("تم تحديث حالة الطلب بنجاح");
       } else {
         toast.error(data.error || "فشل تحديث الحالة");
@@ -265,7 +265,7 @@ export default function OrdersAdminPage() {
                         <td className="px-6 py-4">
                           <Select
                             defaultValue={order.status}
-                            onValueChange={(val: string) => updateStatus(order.id, val)}
+                            onValueChange={(val: string) => updateStatus(order.order_number, val)}
                           >
                             <SelectTrigger className="w-[140px] rounded-full h-9 text-xs font-bold border-2">
                               <div className="flex items-center gap-2">
