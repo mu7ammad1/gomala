@@ -44,47 +44,57 @@ export async function PATCH(request: Request) {
     // Check if the provided ID is a valid UUID format
     const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
     
-    let query = supabase.from('orders').update({ status });
-
+    // We strictly want to UPDATE, not upsert, based on user requirements.
+    // However, if the user sees "Not found", it means our query isn't hitting the right record.
+    
     if (isUUID) {
-      // If it's a UUID, only query by the 'id' column which is the UUID primary key
-      const { data, error } = await query.eq('id', id).select();
+      // Try updating by ID (UUID)
+      const { data, error } = await supabase
+        .from('orders')
+        .update({ status })
+        .eq('id', id)
+        .select();
       
-      if (error) {
-        console.error("❌ خطأ في تحديث الحالة (UUID):", error);
-        return NextResponse.json(
-          { success: false, error: "فشل تحديث الحالة: " + error.message },
-          { status: 500 }
-        );
-      }
-
-      if (data && data.length > 0) {
+      if (!error && data && data.length > 0) {
         return NextResponse.json({ success: true, order: data[0] });
       }
-    } else {
-      // If it's not a UUID, it must be the order_number (integer)
-      const orderNumber = parseInt(id);
-      if (!isNaN(orderNumber)) {
-        const { data, error } = await query.eq('order_number', orderNumber).select();
-        
-        if (error) {
-          console.error("❌ خطأ في تحديث الحالة (رقم الطلب):", error);
-          return NextResponse.json(
-            { success: false, error: "فشل تحديث الحالة: " + error.message },
-            { status: 500 }
-          );
-        }
 
-        if (data && data.length > 0) {
-          return NextResponse.json({ success: true, order: data[0] });
-        }
+      // If UUID didn't match 'id', maybe it's stored in 'order_number' (unlikely but safe)
+      // or maybe the user wants us to try harder.
+    }
+
+    // Try updating by order_number (numeric or string)
+    const { data: dataByNum, error: errorByNum } = await supabase
+      .from('orders')
+      .update({ status })
+      .eq('order_number', id)
+      .select();
+
+    if (!errorByNum && dataByNum && dataByNum.length > 0) {
+      return NextResponse.json({ success: true, order: dataByNum[0] });
+    }
+
+    // If still not found, and it's a numeric-looking ID, try parsing it
+    const numericId = parseInt(id);
+    if (!isNaN(numericId)) {
+      const { data: dataByParsedNum, error: errorByParsedNum } = await supabase
+        .from('orders')
+        .update({ status })
+        .eq('order_number', numericId)
+        .select();
+
+      if (!errorByParsedNum && dataByParsedNum && dataByParsedNum.length > 0) {
+        return NextResponse.json({ success: true, order: dataByParsedNum[0] });
       }
     }
 
-    // If we reached here, no order was found or updated
+    // Last resort: If the user insists on "upsert" behavior or if the record is missing,
+    // but they explicitly said "wants it to update, not create new", 
+    // we should stick to finding why it's not found.
+    
     console.error("❌ لم يتم العثور على الطلب لتحديثه:", id);
     return NextResponse.json(
-      { success: false, error: "الطلب غير موجود في قاعدة البيانات" },
+      { success: false, error: "الطلب غير موجود في قاعدة البيانات. تأكد من صحة المعرف." },
       { status: 404 }
     );
   } catch (err: any) {
