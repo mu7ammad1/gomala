@@ -30,6 +30,15 @@ const nextConfig: NextConfig = {
     "*.replit.app",
     "*.janeway.replit.dev"
   ],
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        "*.replit.dev",
+        "*.replit.app"
+      ]
+    }
+  },
+  turbopack: {},
 };
 
 export default nextConfig;
