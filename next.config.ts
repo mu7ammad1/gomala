@@ -36,7 +36,7 @@ const nextConfig: NextConfig = {
         "*.replit.dev",
         "*.replit.app"
       ]
-    }
+    },
   },
   turbopack: {},
 };
