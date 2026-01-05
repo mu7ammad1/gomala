@@ -41,65 +41,52 @@ export async function PATCH(request: Request) {
       );
     }
 
-    // Try updating by ID directly first (UUID or numeric)
-    let { data, error } = await supabase
-      .from('orders')
-      .update({ status })
-      .eq('id', id)
-      .select();
+    // Check if the provided ID is a valid UUID format
+    const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id);
+    
+    let query = supabase.from('orders').update({ status });
 
-    // If not found by UUID/Internal ID, try order_number
-    if (!error && (!data || data.length === 0)) {
-      const { data: dataByNum, error: errorByNum } = await supabase
-        .from('orders')
-        .update({ status })
-        .eq('order_number', id)
-        .select();
+    if (isUUID) {
+      // If it's a UUID, only query by the 'id' column which is the UUID primary key
+      const { data, error } = await query.eq('id', id).select();
       
-      if (errorByNum) {
-        console.error("❌ خطأ في تحديث الحالة (رقم الطلب):", errorByNum);
-        return NextResponse.json(
-          { success: false, error: "فشل تحديث الحالة: " + errorByNum.message },
-          { status: 500 }
-        );
-      }
-
-      if (dataByNum && dataByNum.length > 0) {
-        data = dataByNum;
-      }
-    }
-
-    if (error) {
-      console.error("❌ خطأ في تحديث الحالة (ID):", error);
-      // Fallback: try order_number even if first one errored (might be invalid UUID format)
-      const { data: dataByNumFallback, error: errorByNumFallback } = await supabase
-        .from('orders')
-        .update({ status })
-        .eq('order_number', id)
-        .select();
-
-      if (!errorByNumFallback && dataByNumFallback && dataByNumFallback.length > 0) {
-        data = dataByNumFallback;
-      } else {
+      if (error) {
+        console.error("❌ خطأ في تحديث الحالة (UUID):", error);
         return NextResponse.json(
           { success: false, error: "فشل تحديث الحالة: " + error.message },
           { status: 500 }
         );
       }
+
+      if (data && data.length > 0) {
+        return NextResponse.json({ success: true, order: data[0] });
+      }
+    } else {
+      // If it's not a UUID, it must be the order_number (integer)
+      const orderNumber = parseInt(id);
+      if (!isNaN(orderNumber)) {
+        const { data, error } = await query.eq('order_number', orderNumber).select();
+        
+        if (error) {
+          console.error("❌ خطأ في تحديث الحالة (رقم الطلب):", error);
+          return NextResponse.json(
+            { success: false, error: "فشل تحديث الحالة: " + error.message },
+            { status: 500 }
+          );
+        }
+
+        if (data && data.length > 0) {
+          return NextResponse.json({ success: true, order: data[0] });
+        }
+      }
     }
 
-    if (!data || data.length === 0) {
-      console.error("❌ لم يتم العثور على الطلب لتحديثه:", id);
-      return NextResponse.json(
-        { success: false, error: "الطلب غير موجود في قاعدة البيانات" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({
-      success: true,
-      order: data[0]
-    });
+    // If we reached here, no order was found or updated
+    console.error("❌ لم يتم العثور على الطلب لتحديثه:", id);
+    return NextResponse.json(
+      { success: false, error: "الطلب غير موجود في قاعدة البيانات" },
+      { status: 404 }
+    );
   } catch (err: any) {
     console.error("❌ خطأ عام:", err);
     return NextResponse.json(

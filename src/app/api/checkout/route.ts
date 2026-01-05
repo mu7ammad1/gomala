@@ -32,7 +32,7 @@ export async function POST(request: Request) {
       customer_address: customerAddress,
       customer_city: customerCity,
       customer_notes: customerNotes,
-      status: 'pending',
+        pending: 'pending',
       payment_status: 'unpaid',
       // لإرضاء أعمدة الجدول القديمة (اختياري)
       product_name: items.length > 1 ? `طلب متعدد (${items.length} منتجات)` : items[0].name,
