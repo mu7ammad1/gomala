@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,9 @@ import {
   LucideXCircle,
   LucideLock,
   LucideShoppingBag,
+  LucideLayoutDashboard,
+  LucideCalendar,
+  LucideFilter,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -22,12 +25,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function OrdersAdminPage() {
   const [isAuthorized, setIsAuthorized] = useState(false);
   const [password, setPassword] = useState("");
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState("all");
 
   const checkPassword = (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,7 +49,6 @@ export default function OrdersAdminPage() {
       setLoading(true);
       const response = await fetch("/api/orders");
       
-      // Check if response is ok and has content
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
@@ -71,23 +75,48 @@ export default function OrdersAdminPage() {
 
   const updateStatus = async (orderId: string, newStatus: string) => {
     try {
+      // Use the correct ID from the database
       const response = await fetch("/api/orders", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: orderId, status: newStatus }),
       });
+      
       const data = await response.json();
       if (data.success) {
-        setOrders(orders.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
+        setOrders(prev => prev.map(o => o.id === orderId ? { ...o, status: newStatus } : o));
         toast.success("تم تحديث حالة الطلب بنجاح");
       } else {
-        toast.error("فشل تحديث الحالة");
+        toast.error(data.error || "فشل تحديث الحالة");
       }
     } catch (err) {
       console.error(err);
       toast.error("حدث خطأ أثناء التحديث");
     }
   };
+
+  const stats = useMemo(() => {
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime();
+    const lastWeek = today - 7 * 24 * 60 * 60 * 1000;
+    const lastMonth = today - 30 * 24 * 60 * 60 * 1000;
+
+    return {
+      daily: orders.filter(o => new Date(o.created_at).getTime() >= today),
+      weekly: orders.filter(o => new Date(o.created_at).getTime() >= lastWeek),
+      monthly: orders.filter(o => new Date(o.created_at).getTime() >= lastMonth),
+      total: orders
+    };
+  }, [orders]);
+
+  const filteredOrders = useMemo(() => {
+    switch (activeTab) {
+      case "daily": return stats.daily;
+      case "weekly": return stats.weekly;
+      case "monthly": return stats.monthly;
+      default: return stats.total;
+    }
+  }, [activeTab, stats]);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -97,6 +126,17 @@ export default function OrdersAdminPage() {
       case "delivered": return <LucideCheckCircle className="text-emerald-500" />;
       case "cancelled": return <LucideXCircle className="text-rose-500" />;
       default: return <LucidePackage className="text-gray-500" />;
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case "pending": return "قيد الانتظار";
+      case "confirmed": return "مؤكد";
+      case "shipping": return "جاري الشحن";
+      case "delivered": return "تم التوصيل";
+      case "cancelled": return "ملغي";
+      default: return status;
     }
   };
 
@@ -132,67 +172,97 @@ export default function OrdersAdminPage() {
   return (
     <div className="min-h-screen bg-gray-50 pb-20 w-full" dir="rtl">
       <div className="bg-[#A5B68D] pt-12 pb-20 px-4 text-white text-center">
-        <LucidePackage className="mx-auto size-12 mb-4 opacity-90" />
+        <LucideLayoutDashboard className="mx-auto size-12 mb-4 opacity-90" />
         <h1 className="text-3xl font-bold mb-2">إدارة الطلبات</h1>
-        <p className="opacity-80">عرض وتعديل حالات الطلبات الواردة</p>
+        <p className="opacity-80">نظام الإشراف والمتابعة الشامل</p>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 -mt-12">
-        <div className="bg-white rounded-3xl shadow-sm border overflow-hidden">
-          <div className="p-6 border-b flex justify-between items-center bg-gray-50/50">
-            <h2 className="text-xl font-bold">قائمة الطلبات ({orders.length})</h2>
-            <Button onClick={fetchOrders} variant="outline" size="sm" className="rounded-full">
-              تحديث البيانات
-            </Button>
+        {/* Statistics Cards */}
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white p-6 rounded-3xl shadow-sm border text-center">
+            <div className="text-gray-400 text-sm mb-1">اليوم</div>
+            <div className="text-2xl font-bold text-primary">{stats.daily.length}</div>
           </div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border text-center">
+            <div className="text-gray-400 text-sm mb-1">الأسبوع</div>
+            <div className="text-2xl font-bold text-[#A5B68D]">{stats.weekly.length}</div>
+          </div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border text-center">
+            <div className="text-gray-400 text-sm mb-1">الشهر</div>
+            <div className="text-2xl font-bold text-blue-500">{stats.monthly.length}</div>
+          </div>
+          <div className="bg-white p-6 rounded-3xl shadow-sm border text-center">
+            <div className="text-gray-400 text-sm mb-1">الإجمالي</div>
+            <div className="text-2xl font-bold text-rose-500">{stats.total.length}</div>
+          </div>
+        </div>
 
-          <div className="overflow-x-auto">
-            <table className="w-full text-right border-collapse">
-              <thead>
-                <tr className="bg-gray-50 text-gray-500 text-sm uppercase tracking-wider">
-                  <th className="px-6 py-4 font-bold border-b">رقم الطلب</th>
-                  <th className="px-6 py-4 font-bold border-b">العميل</th>
-                  <th className="px-6 py-4 font-bold border-b">المنتجات</th>
-                  <th className="px-6 py-4 font-bold border-b">الإجمالي</th>
-                  <th className="px-6 py-4 font-bold border-b">الحالة</th>
-                  <th className="px-6 py-4 font-bold border-b">إجراءات</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y">
-                {loading ? (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                      جاري تحميل الطلبات...
-                    </td>
+        <div className="bg-white rounded-3xl shadow-sm border overflow-hidden">
+          <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
+            <div className="p-4 md:p-6 border-b flex flex-col md:flex-row justify-between items-center bg-gray-50/50 gap-4">
+              <div className="flex items-center gap-4">
+                <LucideFilter className="text-gray-400" size={20} />
+                <TabsList className="bg-white border rounded-full p-1 h-auto">
+                  <TabsTrigger value="all" className="rounded-full px-6 py-2 data-[state=active]:bg-[#A5B68D] data-[state=active]:text-white">الكل</TabsTrigger>
+                  <TabsTrigger value="daily" className="rounded-full px-6 py-2 data-[state=active]:bg-[#A5B68D] data-[state=active]:text-white">يومي</TabsTrigger>
+                  <TabsTrigger value="weekly" className="rounded-full px-6 py-2 data-[state=active]:bg-[#A5B68D] data-[state=active]:text-white">أسبوعي</TabsTrigger>
+                  <TabsTrigger value="monthly" className="rounded-full px-6 py-2 data-[state=active]:bg-[#A5B68D] data-[state=active]:text-white">شهري</TabsTrigger>
+                </TabsList>
+              </div>
+              <Button onClick={fetchOrders} variant="outline" size="sm" className="rounded-full h-10 px-6 font-bold">
+                تحديث البيانات
+              </Button>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-right border-collapse">
+                <thead>
+                  <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
+                    <th className="px-6 py-4 font-bold border-b">الطلب</th>
+                    <th className="px-6 py-4 font-bold border-b">العميل</th>
+                    <th className="px-6 py-4 font-bold border-b">التاريخ</th>
+                    <th className="px-6 py-4 font-bold border-b">الإجمالي</th>
+                    <th className="px-6 py-4 font-bold border-b">الحالة</th>
+                    <th className="px-6 py-4 font-bold border-b text-center">إجراءات</th>
                   </tr>
-                ) : orders.length === 0 ? (
-                  <tr>
-                    <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
-                      لا توجد طلبات حالياً
-                    </td>
-                  </tr>
-                ) : (
-                  orders.map((order) => (
-                    <tr key={order.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 font-mono font-bold text-primary">
-                        #{order.order_number}
+                </thead>
+                <tbody className="divide-y">
+                  {loading ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                        جاري تحميل الطلبات...
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="font-bold">{order.customer_name}</div>
-                        <div className="text-xs text-gray-400">{order.customer_phone}</div>
+                    </tr>
+                  ) : filteredOrders.length === 0 ? (
+                    <tr>
+                      <td colSpan={6} className="px-6 py-12 text-center text-gray-500">
+                        لا توجد طلبات في هذه الفترة
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="text-sm max-w-[200px] truncate">
-                          {Array.isArray(order.json) 
-                            ? order.json.map((i:any) => i.name).join('، ')
-                            : order.product_name}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 font-bold text-rose-500 whitespace-nowrap">
-                        {order.total_price?.toLocaleString()} EGP
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center gap-2">
+                    </tr>
+                  ) : (
+                    filteredOrders.map((order) => (
+                      <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4">
+                          <div className="font-mono font-bold text-primary">#{order.order_number}</div>
+                          <div className="text-[10px] text-gray-400 truncate max-w-[100px]">{order.id}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="font-bold">{order.customer_name}</div>
+                          <div className="text-xs text-gray-400">{order.customer_phone}</div>
+                        </td>
+                        <td className="px-6 py-4">
+                          <div className="text-xs">
+                            {new Date(order.created_at).toLocaleDateString('ar-EG')}
+                          </div>
+                          <div className="text-[10px] text-gray-400">
+                            {new Date(order.created_at).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
+                          </div>
+                        </td>
+                        <td className="px-6 py-4 font-bold text-rose-500 whitespace-nowrap">
+                          {order.total_price?.toLocaleString()} EGP
+                        </td>
+                        <td className="px-6 py-4">
                           <Select
                             defaultValue={order.status}
                             onValueChange={(val: string) => updateStatus(order.id, val)}
@@ -211,21 +281,21 @@ export default function OrdersAdminPage() {
                               <SelectItem value="cancelled">ملغي</SelectItem>
                             </SelectContent>
                           </Select>
-                        </div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <Button asChild variant="ghost" size="sm" className="rounded-full hover:bg-primary/10 text-primary">
-                          <Link href={`/orders/${order.order_number}`} target="_blank">
-                            <LucideEye size={18} />
-                          </Link>
-                        </Button>
-                      </td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                        </td>
+                        <td className="px-6 py-4 text-center">
+                          <Button asChild variant="ghost" size="sm" className="rounded-full hover:bg-primary/10 text-primary">
+                            <Link href={`/orders/${order.order_number}`} target="_blank">
+                              <LucideEye size={18} />
+                            </Link>
+                          </Button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </Tabs>
         </div>
       </div>
     </div>
