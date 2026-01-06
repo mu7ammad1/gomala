@@ -5,15 +5,15 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const { 
+    const {
       items,
       totalPrice,
-      customerName, 
-      customerPhone, 
+      customerName,
+      customerPhone,
       customerEmail,
       customerAddress,
       customerCity,
-      customerNotes
+      customerNotes,
     } = body;
 
     // 1. التحقق من البيانات
@@ -32,16 +32,20 @@ export async function POST(request: Request) {
       customer_address: customerAddress,
       customer_city: customerCity,
       customer_notes: customerNotes,
-        pending: 'pending',
-      payment_status: 'unpaid',
+      status: "pending",
+      payment_status: "unpaid",
       // لإرضاء أعمدة الجدول القديمة (اختياري)
-      product_name: items.length > 1 ? `طلب متعدد (${items.length} منتجات)` : items[0].name,
-      quantity: items.reduce((acc: number, item: any) => acc + item.quantity, 0),
+      product_name:
+        items.length > 1 ? `طلب متعدد (${items.length} منتجات)` : items[0].name,
+      quantity: items.reduce(
+        (acc: number, item: any) => acc + item.quantity,
+        0,
+      ),
     };
 
     // 3. إدخال البيانات في Supabase
     const { data, error } = await supabase
-      .from('orders')
+      .from("orders")
       .insert([orderData])
       .select()
       .single();
@@ -51,11 +55,13 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      order: data 
-    }, { status: 201 });
-
+    return NextResponse.json(
+      {
+        success: true,
+        order: data,
+      },
+      { status: 201 },
+    );
   } catch (error: any) {
     return NextResponse.json({ error: "خطأ في المعالجة" }, { status: 500 });
   }
