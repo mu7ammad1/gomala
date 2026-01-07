@@ -8,7 +8,7 @@ export default function Navbar(){
   
   return (
       <nav className={`w-full `}>
-        <p className='bg-teal-600 text-white text-lg text-center w-full font-semibold p-2'>اطلبه تلوقتي و ليك شحن مجاني لاي مكان</p>
+        <p className='bg-teal-600 text-white text-lg text-center w-full font-semibold p-2'>اطلب تلوقتي و ليك شحن مجاني للطلبيات فوق 880 جنيه</p>
         <div className="w-full flex justify-between items-center pt-3 pb-6 text-sm px-3">
           <div className="flex items-center font-semibold">
             <Link href={"/"} className='text-3xl font-bold momo-trust-display-regular'>Gomlla</Link>

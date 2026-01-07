@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useState, useEffect, use } from "react";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -15,136 +15,80 @@ import {
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/hooks/use-cart";
 import { motion, AnimatePresence } from "framer-motion";
-import { LucideShoppingBag } from "lucide-react"; // تأكد من استيراد الأيقونة
+import { LucideShoppingBag } from "lucide-react";
+import { getProductById } from "@/lib/api";
+import { Product } from "@/types/supabase";
 
-const productsData: {
-  [key: string]: {
-    title: string;
-    price: number;
-    image: string;
-    description: string;
-    gallery?: string[];
-  };
-} = {
-  "1632548806": {
-    title: "Apple IPhone Air With FaceTime - 1TB, 8GB RAM",
-    price: 100,
-    image:
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-    description: "This is product 1",
-    gallery: [
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
-    ],
-  },
-  "163245508": {
-    title: "Apple IPhone 17 Pro Max With FaceTime - 512GB, 12GB RAM",
-    price: 200,
-    image:
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-    description: "This is product 2",
-    gallery: [
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-    ],
-  },
-  "613245581": {
-    title: "Apple IPhone 16 Pro Max With FaceTime - 1TB, 8GB RAM",
-    price: 300,
-    image:
-      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
-    description: "This is product 3",
-    gallery: [
-      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
-    ],
-  },
-  "723245582": {
-    title: "Apple IPhone 15 Mini With FaceTime - 256GB, 6GB RAM",
-    price: 150,
-    image:
-      "https://static.mobilemasr.com/public/categories/683d9ce6ecda7_1748868326.webp",
-    description: "This is product 4",
-    gallery: [
-      "https://static.mobilemasr.com/public/categories/683d9ce6ecda7_1748868326.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
-    ],
-  },
-  "193295508": {
-    title: "Apple IPhone 17 Pro Max With FaceTime - 512GB, 12GB RAM",
-    price: 200,
-    image:
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-    description: "This is product 2",
-    gallery: [
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-    ],
-  },
-  "823245583": {
-    title: "Apple IPhone 14 Pro Max With FaceTime - 512GB, 8GB RAM",
-    price: 220,
-    image:
-      "https://static.mobilemasr.com/public/categories/683d9cfd3e58f_1748868349.webp",
-    description: "This is product 5",
-    gallery: [
-      "https://static.mobilemasr.com/public/categories/683d9cfd3e58f_1748868349.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
-    ],
-  },
-  "118925508": {
-    title: "Apple IPhone 17 Pro Max With FaceTime - 512GB, 12GB RAM",
-    price: 200,
-    image:
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-    description: "This is product 2",
-    gallery: [
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cc4c1307_1748868292.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cdb5a56d_1748868315.webp",
-      "https://static.mobilemasr.com/public/categories/683d9cd308f81_1748868307.webp",
-    ],
-  },
-};
-
-export default function Page() {
-  const params = useParams();
-  const productId = params.product as string;
+export default function Page({ params }: { params: Promise<{ product: string }> }) {
+  const resolvedParams = use(params);
+  const productId = resolvedParams.product;
   const router = useRouter();
   const { addToCart } = useCart();
 
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
   const [mainImage, setMainImage] = useState("");
 
-  // البحث عن بيانات المنتج
-  const productInfo = productsData[productId];
-
-  // تحديث الصورة الرئيسية عند تحميل المنتج
   useEffect(() => {
-    if (productInfo) {
-      setMainImage(productInfo.image);
+    async function fetchProduct() {
+      if (!productId) return;
+      setLoading(true);
+      try {
+        const data = await getProductById(productId);
+        setProduct(data);
+        if (data) {
+          const img = data.tumblers?.main_image || "";
+          setMainImage(img);
+        }
+      } catch (error) {
+        console.error("Failed to fetch product", error);
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [productInfo]);
 
-  // إذا لم يتم العثور على المنتج في البيانات
-  if (!productInfo) {
+    fetchProduct();
+  }, [productId]);
+
+  const handleIncrement = () => {
+    if (quantity < 40) setQuantity(quantity + 1);
+  };
+
+  const handleDecrement = () => {
+    if (quantity > 1) setQuantity(quantity - 1);
+  };
+
+  const handleOrder = () => {
+    if (!product) return;
+
+    addToCart({
+      id: product.id,
+      name: product.title,
+      price: product.price, // Note: You might want to handle discounted price here if needed
+      quantity: quantity,
+      image: mainImage || "https://placehold.co/600x400/png",
+    });
+
+    const cartButton = document.querySelector(
+      "[data-cart-trigger]",
+    ) as HTMLButtonElement;
+    if (cartButton) {
+      cartButton.click();
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+        <p className="text-muted-foreground">جاري تحميل المنتج...</p>
+      </div>
+    )
+  }
+
+  // إذا لم يتم العثور على المنتج
+  if (!product) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
         <div className="bg-secondary/20 p-6 rounded-full">
@@ -163,30 +107,10 @@ export default function Page() {
     );
   }
 
-  const handleIncrement = () => {
-    if (quantity < 40) setQuantity(quantity + 1);
-  };
-
-  const handleDecrement = () => {
-    if (quantity > 1) setQuantity(quantity - 1);
-  };
-
-  const handleOrder = () => {
-    addToCart({
-      id: productId,
-      name: productInfo.title,
-      price: productInfo.price,
-      quantity: quantity,
-      image: productInfo.image,
-    });
-
-    const cartButton = document.querySelector(
-      "[data-cart-trigger]",
-    ) as HTMLButtonElement;
-    if (cartButton) {
-      cartButton.click();
-    }
-  };
+  // Calculate generic gallery from tumblers
+  const gallery = product.tumblers?.tumbler_images || [mainImage];
+  // Ensure main image is in gallery if specific list not provided, or combine them
+  const displayGallery = gallery.length > 0 ? gallery : [mainImage];
 
   return (
     <div className="w-full">
@@ -198,7 +122,7 @@ export default function Page() {
                 <motion.img
                   key={mainImage}
                   src={mainImage}
-                  alt={productInfo.title}
+                  alt={product.title}
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
@@ -209,21 +133,20 @@ export default function Page() {
             </AnimatePresence>
           </div>
           <div className="flex gap-3 overflow-hidden no-scrollbar justify-start">
-            {productInfo.gallery?.map((img, index) => (
+            {displayGallery.map((img, index) => (
               <motion.div
                 key={index + img}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
-                className={`flex-shrink-0 size-16 rounded-2xl border-2 transition-all duration-300 cursor-pointer overflow-hidden p-2 m-2 ${
-                  mainImage === img
-                    ? "border-primary ring-2 ring-primary/20"
-                    : "border-transparent bg-secondary/20 hover:border-primary/50"
-                }`}
+                className={`flex-shrink-0 size-16 rounded-2xl border-2 transition-all duration-300 cursor-pointer overflow-hidden p-2 m-2 ${mainImage === img
+                  ? "border-primary ring-2 ring-primary/20"
+                  : "border-transparent bg-secondary/20 hover:border-primary/50"
+                  }`}
                 onClick={() => setMainImage(img)}
               >
                 <img
                   src={img}
-                  alt={`${productInfo.title} ${index}`}
+                  alt={`${product.title} ${index}`}
                   className="w-full h-full object-cover"
                 />
               </motion.div>
@@ -234,19 +157,24 @@ export default function Page() {
         <div className="flex flex-col">
           <div>
             <p className="text-muted-foreground text-sm mb-1 uppercase tracking-wider font-medium">
-              Apple
+              Product code: {product.product_number}
             </p>
             <h2 className="text-2xl font-bold leading-tight text-foreground mb-4">
-              {productInfo.title}
+              {product.title}
             </h2>
             <div className="flex items-baseline gap-2 mb-6">
               <span className="text-3xl font-bold text-rose-500">
-                {productInfo.price.toLocaleString()}
+                {product.price.toLocaleString()}
               </span>
               <span className="text-sm font-medium text-muted-foreground">
                 EGP
               </span>
             </div>
+            {product.description && (
+              <p className="text-gray-600 dark:text-gray-300 mb-6 leading-relaxed">
+                {product.description}
+              </p>
+            )}
           </div>
 
           <div className="mt-auto">
@@ -300,7 +228,7 @@ export default function Page() {
                 الإجمالي:
               </p>
               <p className="text-2xl font-black text-foreground">
-                {(productInfo.price * quantity).toLocaleString()}{" "}
+                {(product.price * quantity).toLocaleString()}{" "}
                 <span className="text-sm font-normal">EGP</span>
               </p>
             </div>
@@ -308,9 +236,46 @@ export default function Page() {
         </div>
       </div>
 
+      {/* Reviews Section */}
+      <div className="w-full mt-12 bg-white rounded-3xl p-8 border">
+        <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+          <span>الآراء ({product.reviews?.average_rating || 0} من 5)</span>
+          <span className="flex">
+            {[...Array(5)].map((_, i) => (
+              <svg
+                key={i}
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill={i < Math.floor(product.reviews?.average_rating || 0) ? "#f97316" : "#e5e7eb"}
+                className="w-6 h-6"
+              >
+                <path fillRule="evenodd" d="M10.788 3.21c.448-1.077 1.976-1.077 2.424 0l2.082 5.007 5.404.433c1.164.093 1.636 1.545.749 2.305l-4.117 3.527 1.257 5.273c.271 1.136-.964 2.033-1.96 1.425L12 18.354 7.373 21.18c-.996.608-2.231-.29-1.96-1.425l1.257-5.273-4.117-3.527c-.887-.76-.415-2.212.749-2.305l5.404-.433 2.082-5.006z" clipRule="evenodd" />
+              </svg>
+            ))}
+          </span>
+        </h2>
+
+        {product.reviews?.review_images && product.reviews.review_images.length > 0 ? (
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {product.reviews.review_images.map((img, idx) => (
+              <div key={idx} className="aspect-square rounded-2xl overflow-hidden border bg-gray-50">
+                <img
+                  src={img}
+                  alt={`Review ${idx + 1}`}
+                  className="w-full h-full object-cover hover:scale-110 transition-transform duration-300"
+                />
+              </div>
+            ))}
+          </div>
+        ) : (
+          <p className="text-gray-500 text-center py-8">لا توجد آراء مصورة لهذا المنتج حتى الآن.</p>
+        )}
+      </div>
+
       <div className="flex gap-5 min-h-screen mt-10">
         <section className="w-full flex flex-col gap-3 px-3 rounded-3xl">
           <ul style={{ listStyle: "none" }}>
+            {/* Ads or extra content can remain here */}
             <li
               className="card"
               style={{ position: "sticky", top: 0, paddingTop: `1em` }}
@@ -321,70 +286,9 @@ export default function Page() {
                 className="w-full h-full object-contain rounded-3xl"
               />
             </li>
-            <li
-              className="card"
-              style={{ position: "sticky", top: 20, paddingTop: `1em` }}
-            >
-              <img
-                src="https://assets-dubaiphone.dubaiphone.net/dp-prod/wp-content/uploads/2025/11/ahly-18-d-eng-copy-1.webp"
-                alt="ads"
-                className="w-full h-full object-contain rounded-3xl"
-              />
-            </li>
-            <li
-              className="card"
-              style={{ position: "sticky", top: 40, paddingTop: `1em` }}
-            >
-              <img
-                src="https://assets-dubaiphone.dubaiphone.net/dp-prod/wp-content/uploads/2025/11/valuy-15-eng-copy-1.webp"
-                alt="ads"
-                className="w-full h-full object-contain rounded-3xl"
-              />
-            </li>
           </ul>
         </section>
       </div>
     </div>
-  );
-}
-
-// --- المكونات الإضافية ---
-
-const ProductsTableData = [
-  {
-    product_id: "INV001",
-    colors: "Red, Green",
-    brands: "Apple",
-    totalAmount: "$250.00",
-  },
-  {
-    product_id: "INV002",
-    colors: "Blue",
-    brands: "Samsung",
-    totalAmount: "$150.00",
-  },
-];
-
-export function TableDemo() {
-  return (
-    <Table className="w-full">
-      <TableCaption>قائمة المواصفات التقنية</TableCaption>
-      <TableHeader className="bg-border">
-        <TableRow>
-          <TableHead className="text-left">الميزة</TableHead>
-          <TableHead className="text-left">التفاصيل</TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {ProductsTableData.map((product) => (
-          <TableRow key={product.product_id}>
-            <TableCell className="font-medium text-left">
-              {product.colors}
-            </TableCell>
-            <TableCell className="text-left">{product.brands}</TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
   );
 }
