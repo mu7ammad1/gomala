@@ -67,11 +67,11 @@ const ProductCard: React.FC<ProductCardProps> = ({
       </CardContent>
       <CardFooter className="p-3 grid gap-2 rounded-b-2xl bg-secondary h-full">
         <CardTitle>
-          <p className="text-sm font-thin text-gray-800 hidden">
+          <p className="text-sm font-thin text-muted-foreground hidden">
             Snickers & Shoes
           </p>
           <Link href={`/product/${id}`}>
-            <p className="text-normal font-[400] leading-6">{title}</p>
+            <p className="text-normal font-[400] leading-6 text-foreground">{title}</p>
           </Link>
         </CardTitle>
         <CardDescription className="text-sm gap-1 items-center w-full flex">
@@ -98,8 +98,8 @@ const ProductCard: React.FC<ProductCardProps> = ({
           <span className="pl-2">{rate}</span>
         </CardDescription>
         <CardDescription className="text-sm flex gap-3 *:py-1 ">
-          <p className="text-base font-thin">${price}</p>
-          <p className="text-base font-thin line-through">${price}</p>
+          <p className="text-base font-thin text-foreground">${price}</p>
+          <p className="text-base font-thin line-through text-muted-foreground">${price}</p>
           <p className="text-base font-thin text-rose-400">-%20</p>
         </CardDescription>
 

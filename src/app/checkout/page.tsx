@@ -151,15 +151,18 @@ function CheckoutContent() {
   if (cart.length === 0) {
     return (
       <div
-        className="min-h-screen flex flex-col justify-center items-center gap-6"
+        className="min-h-screen flex flex-col justify-center items-center gap-6 bg-background px-6"
         dir="rtl"
       >
-        <div className="bg-gray-100 p-6 rounded-full">
-          <LucideCheckCircle className="size-16 text-gray-400" />
+        <div className="bg-muted p-8 rounded-full animate-in zoom-in duration-500">
+          <LucideShoppingCart className="size-20 text-muted-foreground opacity-50" />
         </div>
-        <p className="text-2xl font-bold text-gray-600">سلة التسوق فارغة</p>
+        <div className="text-center space-y-2">
+          <p className="text-3xl font-black text-foreground">سلة التسوق فارغة</p>
+          <p className="text-muted-foreground">يبدو أنك لم تضف أي منتجات بعد</p>
+        </div>
         <Link href="/">
-          <Button size="lg" className="rounded-xl px-8">
+          <Button size="lg" className="rounded-2xl px-10 py-7 text-lg font-bold shadow-xl shadow-primary/20 transition-all hover:scale-105">
             العودة للتسوق
           </Button>
         </Link>
@@ -168,43 +171,49 @@ function CheckoutContent() {
   }
 
   return (
-    <div className="min-h-screen w-full py-12 px-4 bg-gray-50/50" dir="rtl">
+    <div className="min-h-screen w-full py-8 md:py-12 px-4 bg-background transition-colors duration-300 pb-24" dir="rtl">
       <div className="max-w-5xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-black text-gray-900 mb-2">
-            متابعة الشراء
+        <div className="text-center mb-8 md:mb-12">
+          <h1 className="text-4xl font-black text-foreground mb-3 tracking-tight">
+            إتمام الطلب
           </h1>
-          <p className="text-gray-500">خطوات بسيطة لإتمام طلبك</p>
+          <p className="text-muted-foreground text-base">خطوات سريعة وسهلة لتصلك شحنتك</p>
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-8 bg-white p-1 h-14 rounded-2xl border shadow-sm">
+          <TabsList className="grid w-full grid-cols-2 mb-10 bg-card p-1.5 h-16 rounded-[2rem] border shadow-md sticky top-24 z-40 backdrop-blur-md bg-card/80 transition-all">
             <TabsTrigger
               value="cart"
-              className="text-base rounded-xl data-[state=active]:bg-[#A5B68D] data-[state=active]:text-white transition-all"
+              className="text-base font-bold rounded-3xl data-[state=active]:bg-primary data-[state=active]:text-white transition-all duration-300"
             >
-              <LucideShoppingCart className="ml-2 w-4 h-4" /> مراجعة السلة
+              <span className="flex items-center gap-2">
+                <span className="size-6 rounded-full bg-background/20 flex items-center justify-center text-xs">1</span>
+                مراجعة السلة
+              </span>
             </TabsTrigger>
             <TabsTrigger
               value="shipping"
-              className="text-base rounded-xl data-[state=active]:bg-[#A5B68D] data-[state=active]:text-white transition-all"
+              className="text-base font-bold rounded-3xl data-[state=active]:bg-primary data-[state=active]:text-white transition-all duration-300"
             >
-              <LucideMapPin className="ml-2 w-4 h-4" /> بيانات الشحن
+              <span className="flex items-center gap-2">
+                <span className="size-6 rounded-full bg-background/20 flex items-center justify-center text-xs">2</span>
+                بيانات الشحن
+              </span>
             </TabsTrigger>
           </TabsList>
 
           <div className="grid lg:grid-cols-3 gap-8">
-            <div className={`lg:col-span-2 ${activeTab === "shipping" ? "hidden lg:block" : ""}`}>
+            <div className="lg:col-span-2">
               <TabsContent value="cart" forceMount className={activeTab === 'cart' ? 'block' : 'hidden lg:hidden'}>
-                <Card className="border-none shadow-lg rounded-3xl overflow-hidden">
-                  <CardHeader className="bg-white border-b px-8 py-6">
-                    <CardTitle>محتويات السلة ({cart.length})</CardTitle>
+                <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-card">
+                  <CardHeader className="bg-card border-b px-8 py-6">
+                    <CardTitle className="text-foreground">محتويات السلة ({cart.length})</CardTitle>
                   </CardHeader>
                   <CardContent className="p-0">
                     <div className="divide-y">
                       {cart.map((item) => (
-                        <div key={item.id} className="p-6 flex gap-4 hover:bg-gray-50/50 transition-colors">
-                          <div className="size-24 rounded-2xl border bg-white p-2 shrink-0">
+                        <div key={item.id} className="p-6 flex gap-4 hover:bg-muted/50 transition-colors">
+                          <div className="size-24 rounded-2xl border bg-card p-2 shrink-0">
                             <img
                               src={item.image}
                               alt={item.name}
@@ -213,13 +222,13 @@ function CheckoutContent() {
                           </div>
                           <div className="flex-1 flex flex-col justify-between">
                             <div className="flex justify-between items-start">
-                              <h3 className="font-bold text-gray-900 line-clamp-2 leading-tight">
+                              <h3 className="font-bold text-foreground line-clamp-2 leading-tight">
                                 {item.name}
                               </h3>
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="text-red-400 hover:text-red-500 hover:bg-red-50 -mt-2 -ml-2"
+                                className="text-destructive hover:text-white hover:bg-destructive -mt-2 -ml-2 rounded-xl transition-all"
                                 onClick={() => removeFromCart(item.id)}
                               >
                                 <LucideTrash2 size={18} />
@@ -227,23 +236,23 @@ function CheckoutContent() {
                             </div>
 
                             <div className="flex justify-between items-end mt-4">
-                              <div className="flex items-center gap-3 bg-gray-100/80 rounded-xl p-1">
+                              <div className="flex items-center gap-3 bg-muted rounded-xl p-1">
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-8 w-8 rounded-lg bg-white shadow-sm hover:bg-gray-50"
+                                  className="h-8 w-8 rounded-lg bg-card shadow-sm hover:bg-accent"
                                   onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                   disabled={item.quantity <= 1}
                                 >
                                   <LucideMinus size={14} />
                                 </Button>
-                                <span className="w-4 text-center font-bold text-sm">
+                                <span className="w-4 text-center font-bold text-sm text-foreground">
                                   {item.quantity}
                                 </span>
                                 <Button
                                   variant="ghost"
                                   size="icon"
-                                  className="h-8 w-8 rounded-lg bg-white shadow-sm hover:bg-gray-50"
+                                  className="h-8 w-8 rounded-lg bg-card shadow-sm hover:bg-accent"
                                   onClick={() => updateQuantity(item.id, item.quantity + 1)}
                                   disabled={item.quantity >= 40}
                                 >
@@ -266,7 +275,7 @@ function CheckoutContent() {
                       ))}
                     </div>
                   </CardContent>
-                  <CardFooter className="p-6 bg-gray-50 border-t flex justify-end">
+                  <CardFooter className="p-6 bg-muted/50 border-t flex justify-end">
                     <Button
                       onClick={() => setActiveTab("shipping")}
                       className="rounded-xl px-8 py-6 text-lg font-bold shadow-lg"
@@ -278,9 +287,9 @@ function CheckoutContent() {
               </TabsContent>
 
               <TabsContent value="shipping" forceMount className={activeTab === 'shipping' ? 'block' : 'hidden lg:hidden'}>
-                <Card className="border-none shadow-lg rounded-3xl overflow-hidden">
-                  <CardHeader className="bg-white border-b px-8 py-6">
-                    <CardTitle className="flex items-center gap-2">
+                <Card className="border-none shadow-lg rounded-3xl overflow-hidden bg-card">
+                  <CardHeader className="bg-card border-b px-8 py-6">
+                    <CardTitle className="flex items-center gap-2 text-foreground">
                       <LucideShieldCheck className="text-primary" />
                       بيانات التوصيل
                     </CardTitle>
@@ -351,7 +360,7 @@ function CheckoutContent() {
                             <SelectTrigger className="w-full rounded-xl h-12">
                               <SelectValue placeholder="اختر المحافظة" />
                             </SelectTrigger>
-                            <SelectContent className="max-h-[200px]" align="end">
+                            <SelectContent className="w-min" align="end">
                               {GOVERNORATES.map((gov) => (
                                 <SelectItem key={gov} value={gov} className="cursor-pointer" dir="rtl">
                                   {gov}
@@ -389,7 +398,7 @@ function CheckoutContent() {
                       </div>
 
                       {error && (
-                        <div className="bg-rose-50 border border-rose-200 text-rose-700 p-4 rounded-xl text-sm font-medium">
+                        <div className="bg-destructive/10 border border-destructive/20 text-destructive p-4 rounded-2xl text-sm font-bold animate-in fade-in slide-in-from-top-2">
                           {error}
                         </div>
                       )}
@@ -401,42 +410,69 @@ function CheckoutContent() {
 
             {/* Left Column: Summary */}
             <div className="lg:col-span-1">
-              <Card className="border-none shadow-lg rounded-3xl overflow-hidden sticky top-8">
-                <CardHeader className="bg-gray-50/50 border-b px-6 py-5">
-                  <CardTitle className="text-lg">ملخص الطلب</CardTitle>
+              <Card className="border-none shadow-lg rounded-3xl overflow-hidden sticky top-8 bg-card">
+                <CardHeader className="bg-muted/50 border-b px-6 py-5">
+                  <CardTitle className="text-lg text-foreground">ملخص الطلب</CardTitle>
                 </CardHeader>
                 <CardContent className="p-6">
+                  {/* Item List Summary - Always Visible */}
+                  <div className="mb-6 space-y-4">
+                    <p className="text-sm font-bold text-muted-foreground flex items-center gap-2">
+                      <LucideShoppingCart size={16} /> المنتجات المختارة
+                    </p>
+                    <div className="space-y-3 max-h-[350px] overflow-y-auto pr-2 custom-scrollbar">
+                      {cart.map((item) => (
+                        <div key={item.id} className="flex gap-4 items-center group">
+                          <div className="size-16 rounded-2xl border bg-background p-1.5 shrink-0 group-hover:scale-105 transition-transform">
+                            <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-sm font-bold text-foreground truncate">{item.name}</p>
+                            <p className="text-xs text-muted-foreground">{item.quantity} × {item.price.toLocaleString()} ج.م</p>
+                          </div>
+                          <p className="text-sm font-black text-primary whitespace-nowrap">
+                            {(item.price * item.quantity).toLocaleString()} ج.م
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <Separator className="mb-6 opacity-50" />
+
                   <div className="space-y-3">
                     <div className="flex justify-between text-sm">
-                      <span className="text-gray-500">مجموع المنتجات</span>
-                      <span className="font-bold">
+                      <span className="text-muted-foreground">مجموع المنتجات</span>
+                      <span className="font-bold text-foreground">
                         {subtotal.toLocaleString()} ج.م
                       </span>
                     </div>
                     <div className="flex justify-between text-sm">
-                      <span className="flex items-center gap-2 text-gray-500">
+                      <span className="flex items-center gap-2 text-muted-foreground">
                         <LucideTruck size={14} /> مصاريف الشحن
                       </span>
                       {isFreeShipping ? (
                         <span className="font-bold text-emerald-600">مجاناً</span>
                       ) : (
-                        <span className="font-bold">{SHIPPING_COST} ج.م</span>
+                        <span className="font-bold text-foreground">{SHIPPING_COST} ج.م</span>
                       )}
                     </div>
 
                     {!isFreeShipping && (
-                      <p className="text-xs text-muted-foreground mt-1 bg-yellow-50 p-2 rounded-lg border border-yellow-100">
-                        ⭐ تلميح: أضف منتجات بقيمة {(
-                          FREE_SHIPPING_THRESHOLD - subtotal
-                        ).toLocaleString()} ج.م للحصول على شحن مجاني!
-                      </p>
+                      <div className="text-xs text-muted-foreground mt-4 mb-6 bg-primary/5 p-4 rounded-2xl border border-primary/10 flex items-start gap-3">
+                        <div className="bg-primary/20 p-2 rounded-xl text-primary shrink-0">⭐</div>
+                        <p className="leading-relaxed">
+                          أضف منتجات بقيمة <span className="font-black text-primary">{(FREE_SHIPPING_THRESHOLD - subtotal).toLocaleString()} ج.م</span> للحصول على <span className="font-black">شحن مجاني!</span>
+                        </p>
+                      </div>
                     )}
+
                   </div>
 
-                  <Separator className="my-4" />
+                  <Separator className="mb-6 opacity-50" />
 
                   <div className="flex justify-between items-center mb-6">
-                    <span className="text-base font-bold text-gray-900">
+                    <span className="text-base font-bold text-foreground">
                       الإجمالي النهائي
                     </span>
                     <span className="text-2xl font-black text-primary">
@@ -464,8 +500,8 @@ function CheckoutContent() {
                     )}
                   </Button>
                 </CardContent>
-                <CardFooter className="bg-gray-50 px-6 py-4 justify-center">
-                  <p className="text-xs text-gray-400 flex items-center gap-2">
+                <CardFooter className="bg-muted/50 px-6 py-4 justify-center">
+                  <p className="text-xs text-muted-foreground flex items-center gap-2">
                     <LucideShieldCheck size={12} />
                     بياناتك مشفرة ومحمية 100%
                   </p>
@@ -483,10 +519,10 @@ export default function CheckoutPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex justify-center items-center">
+        <div className="min-h-screen flex justify-center items-center bg-background">
           <div className="text-center">
             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-lg font-bold text-gray-600">
+            <p className="text-lg font-bold text-muted-foreground">
               جاري تحميل صفحة الدفع...
             </p>
           </div>

@@ -11,10 +11,10 @@ export default async function Home({
   const v = (await searchParams).v;
 
   return (
-    <main className="min-h-screen bg-[#8FA878] flex flex-col gap-0 items-center w-full ">
+    <main className="min-h-screen bg-[#8FA878] dark:bg-[#8FA878]/20 flex flex-col gap-0 items-center w-full transition-colors">
       <CarouselPlugin />
       <section className="w-full flex-col h-auto justify-center items-center flex gap-10 py-10">
-        <h2 className="text-right w-[90%] text-4xl py-4 font-bold" dir="rtl">
+        <h2 className="text-right w-[90%] text-4xl py-4 font-bold text-foreground" dir="rtl">
           مـصـاحـف الـقـرآن الـكـريــم
         </h2>
         <div className="flex gap-5 justify-end items-center h-auto w-[90%]">
@@ -30,7 +30,7 @@ export default async function Home({
               loading="lazy"
               className="rounded-xl w-full object-contain"
             />
-            <h2 className="text-right" dir="rtl">
+            <h2 className="text-right text-foreground" dir="rtl">
               مصحف “اكتب كلام ربي”
             </h2>
           </Link>
@@ -46,7 +46,7 @@ export default async function Home({
               loading="lazy"
               className="rounded-xl w-full object-contain"
             />
-            <h2 className="text-right" dir="rtl">
+            <h2 className="text-right text-foreground" dir="rtl">
               مصحف “بالتجويد”
             </h2>
           </Link>
@@ -62,18 +62,18 @@ export default async function Home({
               loading="lazy"
               className="rounded-xl w-full object-contain"
             />
-            <h2 className="text-right" dir="rtl">
+            <h2 className="text-right text-foreground" dir="rtl">
               مصحف بلاستيك عادي
             </h2>
           </Link>
         </div>
       </section>
-      <section className="w-full flex-col h-auto justify-center items-center flex bg-[#ECDFCC] gap-10 py-20">
-        <h2 className="text-right w-[90%] text-4xl  font-medium" dir="rtl">
+      <section className="w-full flex-col h-auto justify-center items-center flex bg-[#ECDFCC] dark:bg-[#ECDFCC]/10 gap-10 py-20">
+        <h2 className="text-right w-[90%] text-4xl  font-medium text-foreground" dir="rtl">
           مصحف بلاستيك عادي
         </h2>
         <div
-          className="w-[90%] flex flex-col justify-start items-start gap-0"
+          className="w-[90%] flex flex-col justify-start items-start gap-0 text-foreground transition-colors"
           dir="rtl"
         >
           <li>ijlasjdg</li>
@@ -82,12 +82,12 @@ export default async function Home({
           <li>ijlasjdg</li>
         </div>
       </section>{" "}
-      <section className="w-full flex-col h-auto justify-center items-center flex bg-[#DA8359] gap-10 py-20">
-        <h2 className="text-right w-[90%] text-4xl  font-medium" dir="rtl">
+      <section className="w-full flex-col h-auto justify-center items-center flex bg-[#DA8359] dark:bg-[#DA8359]/10 gap-10 py-20">
+        <h2 className="text-right w-[90%] text-4xl  font-medium text-foreground" dir="rtl">
           مصحف “بالتجويد”
         </h2>
         <div
-          className="w-[90%] flex flex-col justify-start items-start gap-0"
+          className="w-[90%] flex flex-col justify-start items-start gap-0 text-foreground transition-colors"
           dir="rtl"
         >
           <li>ijlasjdg</li>
@@ -96,12 +96,12 @@ export default async function Home({
           <li>ijlasjdg</li>
         </div>
       </section>{" "}
-      <section className="w-full flex-col h-auto justify-center items-center flex bg-[#C2A68C] gap-10 py-20">
-        <h2 className="text-right w-[90%] text-4xl  font-medium" dir="rtl">
+      <section className="w-full flex-col h-auto justify-center items-center flex bg-[#C2A68C] dark:bg-[#C2A68C]/10 gap-10 py-20">
+        <h2 className="text-right w-[90%] text-4xl  font-medium text-foreground" dir="rtl">
           مصحف “اكتب كلام ربي”
         </h2>
         <div
-          className="w-[90%] flex flex-col justify-start items-start gap-0"
+          className="w-[90%] flex flex-col justify-start items-start gap-0 text-foreground transition-colors"
           dir="rtl"
         >
           <li>ijlasjdg</li>
@@ -111,13 +111,13 @@ export default async function Home({
         </div>
       </section>
       <section className="w-full">
-        <div className="bg-[antiquewhite] gap-10 flex flex-col justify-center items-center p-16 py-32">
+        <div className="bg-[antiquewhite] dark:bg-muted/50 gap-10 flex flex-col justify-center items-center p-16 py-32 transition-colors">
           <div className="w-auto flex justify-around w-full *:*:py-2">
             <div className="w-auto text-center *:py-5">
-              <h2 className="text-4xl font-medium text-center" dir="rtl">
+              <h2 className="text-4xl font-medium text-center text-foreground" dir="rtl">
                 اود الاستماع اليك ❤️
               </h2>
-              <p>01009758799</p>
+              <p className="text-foreground">01009758799</p>
               <Link href={"/auth/sign-up"}>
                 <Button variant={"secondary"} size={"lg"} className=" ">
                   اطلب تلوقتي

@@ -10,8 +10,6 @@ export const metadata: Metadata = {
   description: "جوملا - منصة التجارة الإلكترونية المتكاملة التي تسهل عليك وعلى عملائك عمليات الشراء والبيع بكل سهولة وأمان.",
 };
 
-import { LucideShoppingCart, MessageCircle } from "lucide-react";
-import Link from "next/link";
 import { CartProvider } from "@/hooks/use-cart";
 
 export default function RootLayout({
@@ -40,14 +38,6 @@ export default function RootLayout({
               <Navbar />
               {children}
               <Toaster />
-              <Link
-                href="https://wa.me/201009758799"
-                target="_blank"
-                rel="noopener noreferrer"
-                className={`size-12 bg-primary rounded-full fixed bottom-10 right-10 justify-center items-center flex border-5 border-secondary animate-bounce z-[5000]`}
-              >
-                <MessageCircle className="size-6 text-white" />
-              </Link>
             </section>
           </CartProvider>
         </ThemeProvider>

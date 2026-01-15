@@ -46,11 +46,11 @@ export default function OrdersAdminPage() {
     try {
       setLoading(true);
       const response = await fetch("/api/orders");
-      
+
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
-      
+
       const data = await response.json();
       if (data.success) {
         setOrders(data.orders || []);
@@ -73,7 +73,7 @@ export default function OrdersAdminPage() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: orderNumber, status: newStatus }),
       });
-      
+
       const data = await response.json();
       if (data.success) {
         setOrders(prev => prev.map(o => o.order_number === orderNumber ? { ...o, status: newStatus } : o));
@@ -123,22 +123,22 @@ export default function OrdersAdminPage() {
 
   if (!isAuthorized) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4" dir="rtl">
-        <div className="max-w-md w-full bg-white p-8 rounded-3xl shadow-xl border">
+      <div className="min-h-screen flex items-center justify-center bg-background px-4" dir="rtl">
+        <div className="max-w-md w-full bg-card p-8 rounded-3xl shadow-xl border">
           <div className="flex justify-center mb-6">
             <div className="bg-primary/10 p-4 rounded-full">
               <LucideLock size={32} className="text-primary" />
             </div>
           </div>
-          <h1 className="text-2xl font-bold text-center mb-2">لوحة التحكم</h1>
-          <p className="text-gray-500 text-center mb-8">يرجى إدخال كلمة المرور للمتابعة</p>
+          <h1 className="text-2xl font-bold text-center mb-2 text-foreground">لوحة التحكم</h1>
+          <p className="text-muted-foreground text-center mb-8">يرجى إدخال كلمة المرور للمتابعة</p>
           <form onSubmit={checkPassword} className="space-y-4">
             <Input
               type="password"
               placeholder="كلمة المرور"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="rounded-xl py-6 text-center text-lg"
+              className="rounded-xl py-6 text-center text-lg bg-background"
               autoFocus
             />
             <Button type="submit" className="w-full rounded-xl py-6 text-lg font-bold">
@@ -151,7 +151,7 @@ export default function OrdersAdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20 w-full" dir="rtl">
+    <div className="min-h-screen bg-background pb-20 w-full" dir="rtl">
       <div className="bg-[#A5B68D] pt-12 pb-20 px-4 text-white text-center">
         <LucideLayoutDashboard className="mx-auto size-12 mb-4 opacity-90" />
         <h1 className="text-3xl font-bold mb-2">إدارة الطلبات</h1>
@@ -160,30 +160,30 @@ export default function OrdersAdminPage() {
 
       <div className="max-w-6xl mx-auto px-4 -mt-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-3xl shadow-sm border text-center">
-            <div className="text-gray-400 text-sm mb-1">اليوم</div>
+          <div className="bg-card p-6 rounded-3xl shadow-sm border text-center">
+            <div className="text-muted-foreground text-sm mb-1">اليوم</div>
             <div className="text-2xl font-bold text-primary">{stats.daily.length}</div>
           </div>
-          <div className="bg-white p-6 rounded-3xl shadow-sm border text-center">
-            <div className="text-gray-400 text-sm mb-1">الأسبوع</div>
+          <div className="bg-card p-6 rounded-3xl shadow-sm border text-center">
+            <div className="text-muted-foreground text-sm mb-1">الأسبوع</div>
             <div className="text-2xl font-bold text-[#A5B68D]">{stats.weekly.length}</div>
           </div>
-          <div className="bg-white p-6 rounded-3xl shadow-sm border text-center">
-            <div className="text-gray-400 text-sm mb-1">الشهر</div>
+          <div className="bg-card p-6 rounded-3xl shadow-sm border text-center">
+            <div className="text-muted-foreground text-sm mb-1">الشهر</div>
             <div className="text-2xl font-bold text-blue-500">{stats.monthly.length}</div>
           </div>
-          <div className="bg-white p-6 rounded-3xl shadow-sm border text-center">
-            <div className="text-gray-400 text-sm mb-1">الإجمالي</div>
+          <div className="bg-card p-6 rounded-3xl shadow-sm border text-center">
+            <div className="text-muted-foreground text-sm mb-1">الإجمالي</div>
             <div className="text-2xl font-bold text-rose-500">{stats.total.length}</div>
           </div>
         </div>
 
-        <div className="bg-white rounded-3xl shadow-sm border overflow-hidden">
+        <div className="bg-card rounded-3xl shadow-sm border overflow-hidden">
           <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
-            <div className="p-4 md:p-6 border-b flex flex-col md:flex-row justify-between items-center bg-gray-50/50 gap-4">
+            <div className="p-4 md:p-6 border-b flex flex-col md:flex-row justify-between items-center bg-muted/50 gap-4">
               <div className="flex items-center gap-4">
-                <LucideFilter className="text-gray-400" size={20} />
-                <TabsList className="bg-white border rounded-full p-1 h-auto">
+                <LucideFilter className="text-muted-foreground" size={20} />
+                <TabsList className="bg-card border rounded-full p-1 h-auto">
                   <TabsTrigger value="all" className="rounded-full px-6 py-2 data-[state=active]:bg-[#A5B68D] data-[state=active]:text-white">الكل</TabsTrigger>
                   <TabsTrigger value="daily" className="rounded-full px-6 py-2 data-[state=active]:bg-[#A5B68D] data-[state=active]:text-white">يومي</TabsTrigger>
                   <TabsTrigger value="weekly" className="rounded-full px-6 py-2 data-[state=active]:bg-[#A5B68D] data-[state=active]:text-white">أسبوعي</TabsTrigger>
@@ -198,13 +198,13 @@ export default function OrdersAdminPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-right border-collapse">
                 <thead>
-                  <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
-                    <th className="px-6 py-4 font-bold border-b">الطلب</th>
-                    <th className="px-6 py-4 font-bold border-b">العميل</th>
-                    <th className="px-6 py-4 font-bold border-b">التاريخ</th>
-                    <th className="px-6 py-4 font-bold border-b">الإجمالي</th>
-                    <th className="px-6 py-4 font-bold border-b">الحالة</th>
-                    <th className="px-6 py-4 font-bold border-b text-center">إجراءات</th>
+                  <tr className="bg-muted/50 text-muted-foreground text-xs uppercase tracking-wider">
+                    <th className="px-6 py-4 font-bold border-b text-foreground">الطلب</th>
+                    <th className="px-6 py-4 font-bold border-b text-foreground">العميل</th>
+                    <th className="px-6 py-4 font-bold border-b text-foreground">التاريخ</th>
+                    <th className="px-6 py-4 font-bold border-b text-foreground">الإجمالي</th>
+                    <th className="px-6 py-4 font-bold border-b text-foreground">الحالة</th>
+                    <th className="px-6 py-4 font-bold border-b text-center text-foreground">إجراءات</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y">
@@ -222,19 +222,19 @@ export default function OrdersAdminPage() {
                     </tr>
                   ) : (
                     filteredOrders.map((order) => (
-                      <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                      <tr key={order.id} className="hover:bg-muted/50 transition-colors">
                         <td className="px-6 py-4">
                           <div className="font-mono font-bold text-primary">#{order.order_number}</div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="font-bold">{order.customer_name || "عميل مجهول"}</div>
-                          <div className="text-xs text-gray-400">{order.customer_phone || "بدون هاتف"}</div>
+                          <div className="font-bold text-foreground">{order.customer_name || "عميل مجهول"}</div>
+                          <div className="text-xs text-muted-foreground">{order.customer_phone || "بدون هاتف"}</div>
                         </td>
                         <td className="px-6 py-4">
-                          <div className="text-xs">
+                          <div className="text-xs text-foreground">
                             {new Date(order.created_at).toLocaleDateString('ar-EG')}
                           </div>
-                          <div className="text-[10px] text-gray-400">
+                          <div className="text-[10px] text-muted-foreground">
                             {new Date(order.created_at).toLocaleTimeString('ar-EG', { hour: '2-digit', minute: '2-digit' })}
                           </div>
                         </td>
@@ -246,13 +246,13 @@ export default function OrdersAdminPage() {
                             defaultValue={order.status}
                             onValueChange={(val: string) => updateStatus(order.order_number, val)}
                           >
-                            <SelectTrigger className="w-[140px] rounded-full h-9 text-xs font-bold border-2">
+                            <SelectTrigger className="w-[140px] rounded-full h-9 text-xs font-bold border-2 bg-background text-foreground">
                               <div className="flex items-center gap-2">
                                 {getStatusIcon(order.status)}
                                 <SelectValue />
                               </div>
                             </SelectTrigger>
-                            <SelectContent className="rounded-2xl">
+                            <SelectContent className="rounded-2xl bg-card text-foreground">
                               <SelectItem value="pending">قيد الانتظار</SelectItem>
                               <SelectItem value="confirmed">مؤكد</SelectItem>
                               <SelectItem value="shipping">جاري الشحن</SelectItem>
