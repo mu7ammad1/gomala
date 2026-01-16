@@ -22,6 +22,12 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // --- مكون أزرار تسجيل الدخول ---
 export function AuthButton() {
@@ -40,19 +46,23 @@ export function AuthButton() {
 // --- مكون الملف الشخصي (Profile Sheet) ---
 export function SheetDemo() {
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button
-          variant={"outline"}
-          size={"icon"}
-          className="p-0 shadow-none rounded-full"
-        >
-          <LucideUser absoluteStrokeWidth />
-        </Button>
-      </SheetTrigger>
-      <SheetContent>
-        <SheetHeader>
-          <SheetTitle>تعديل الملف الشخصي</SheetTitle>
+    <TooltipProvider>
+      <Tooltip>
+        <Sheet>
+          <TooltipTrigger asChild>
+            <SheetTrigger asChild>
+              <Button
+                variant={"outline"}
+                size={"icon"}
+                className="p-0 shadow-none rounded-full"
+              >
+                <LucideUser absoluteStrokeWidth />
+              </Button>
+            </SheetTrigger>
+          </TooltipTrigger>
+          <SheetContent>
+            <SheetHeader>
+              <SheetTitle>تعديل الملف الشخصي</SheetTitle>
           <SheetDescription>
             قم بإجراء التغييرات على حسابك هنا. اضغط حفظ عند الانتهاء.
           </SheetDescription>
@@ -75,6 +85,11 @@ export function SheetDemo() {
         </SheetFooter>
       </SheetContent>
     </Sheet>
+    <TooltipContent>
+      <p>الملف الشخصي</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
   );
 }
 
@@ -83,14 +98,17 @@ export function SheetProfile() {
   const { cart, removeFromCart, updateQuantity, totalPrice, totalItems } = useCart();
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button
-          variant={"default"}
-          size={"icon"}
-          className="p-0 shadow-none rounded-full relative"
-          data-cart-trigger
-        >
+    <TooltipProvider>
+      <Tooltip>
+        <Sheet>
+          <TooltipTrigger asChild>
+            <SheetTrigger asChild>
+              <Button
+                variant={"default"}
+                size={"icon"}
+                className="p-0 shadow-none rounded-full relative"
+                data-cart-trigger
+              >
           <LucideShoppingBag absoluteStrokeWidth />
           {totalItems > 0 && (
             <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] rounded-full size-4 flex items-center justify-center">
@@ -98,8 +116,8 @@ export function SheetProfile() {
             </span>
           )}
         </Button>
-      </SheetTrigger>
-
+            </SheetTrigger>
+          </TooltipTrigger>
       <SheetContent className="flex flex-col h-full max-sm:w-full">
         <SheetHeader className="text-right">
           <SheetTitle className="text-left">سلة التسوق</SheetTitle>
@@ -160,5 +178,10 @@ export function SheetProfile() {
         )}
       </SheetContent>
     </Sheet>
+    <TooltipContent>
+      <p>سلة التسوق</p>
+    </TooltipContent>
+  </Tooltip>
+</TooltipProvider>
   );
 }
