@@ -1,6 +1,11 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { Laptop, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 import { useEffect, useMemo, useState } from "react";
@@ -50,28 +55,35 @@ const ThemeSwitcher = () => {
   }
 
   return (
-    <Button
-      variant="secondary"
-      size="icon-lg"
-      onClick={cycleTheme}
-      aria-label={`Switch theme: ${currentTheme} → ${nextTheme}`}
-    >
-      {currentTheme === "light" ? (
-        <Sun
-          size={ICON_SIZE}
-          className="text-muted-foreground transition-colors active:text-foreground"
-        />
-      ) : currentTheme === "dark" ? (
-        <Moon
-          size={ICON_SIZE}
-          className="text-muted-foreground transition-colors active:text-foreground"
-        />
-      ) : (
-        <Laptop
-          size={ICON_SIZE}
-          className="text-muted-foreground transition-colors active:text-foreground"
-        />
-      )}
-    </Button>
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <Button
+          variant="secondary"
+          size="icon-lg"
+          onClick={cycleTheme}
+          aria-label={`Switch theme: ${currentTheme} → ${nextTheme}`}
+        >
+          {currentTheme === "light" ? (
+            <Sun
+              size={ICON_SIZE}
+              className="text-muted-foreground transition-colors active:text-foreground"
+            />
+          ) : currentTheme === "dark" ? (
+            <Moon
+              size={ICON_SIZE}
+              className="text-muted-foreground transition-colors active:text-foreground"
+            />
+          ) : (
+            <Laptop
+              size={ICON_SIZE}
+              className="text-muted-foreground transition-colors active:text-foreground"
+            />
+          )}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>Switch to {nextTheme} theme</p>
+      </TooltipContent>
+    </Tooltip>
   );
 };
