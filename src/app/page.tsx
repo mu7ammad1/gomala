@@ -19,20 +19,7 @@ export default async function ProductsPage() {
       
       <main className="flex flex-col gap-32 pb-32">
         {/* Promotional Section */}
-        <section className="pt-24 px-4 md:px-8">
-          <div className="max-w-5xl mx-auto text-center space-y-8">
-            <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
-              عروض استثنائية. <br />
-              <span className="text-muted-foreground">صُممت لتناسب يومك.</span>
-            </h2>
-            <div className="bg-[#f5f5f7] rounded-[3rem] p-8 md:p-16 flex flex-col items-center gap-8">
-               <p className="text-2xl md:text-3xl font-medium max-w-2xl mx-auto">
-                 استمتع بخصومات حصرية لفترة محدودة على أحدث التكنولوجيا والمنتجات العصرية.
-               </p>
-               <CountdownTimer />
-            </div>
-          </div>
-        </section>
+       
 
         {/* Featured Products */}
         <section className="px-4 md:px-8">
