@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/hooks/use-cart";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { LucideShoppingBag } from "lucide-react";
 import { Product } from "@/types/supabase";
 
@@ -17,9 +17,23 @@ export default function ProductDetailsClient({
 
     const [quantity, setQuantity] = useState(1);
     const [mainImage, setMainImage] = useState(product.image || "");
+    const [showStickyBar, setShowStickyBar] = useState(false);
 
     const discountAmount = product.discount || 0;
     const finalPrice = product.price - discountAmount;
+
+    useEffect(() => {
+        const handleScroll = () => {
+            const addToCartBtn = document.getElementById("main-add-to-cart");
+            if (addToCartBtn) {
+                const rect = addToCartBtn.getBoundingClientRect();
+                setShowStickyBar(rect.bottom < 0);
+            }
+        };
+
+        window.addEventListener("scroll", handleScroll);
+        return () => window.removeEventListener("scroll", handleScroll);
+    }, []);
 
     const handleIncrement = () => {
         if (quantity < 40) setQuantity(quantity + 1);
@@ -53,6 +67,36 @@ export default function ProductDetailsClient({
 
     return (
         <div className="w-full mx-auto py-8 px-4" dir="rtl">
+            <AnimatePresence>
+                {showStickyBar && (
+                    <motion.div
+                        initial={{ y: 100 }}
+                        animate={{ y: 0 }}
+                        exit={{ y: 100 }}
+                        className="fixed bottom-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-lg border-t p-4 flex items-center justify-between gap-4 md:px-8"
+                    >
+                        <div className="flex items-center gap-4">
+                            <img
+                                src={mainImage}
+                                alt={product.name}
+                                className="size-12 rounded-lg object-cover hidden sm:block"
+                            />
+                            <div>
+                                <h4 className="font-bold text-sm line-clamp-1">{product.name}</h4>
+                                <p className="text-primary font-black">{finalPrice.toLocaleString()} ج.م</p>
+                            </div>
+                        </div>
+                        <Button
+                            className="rounded-xl px-8 py-6 text-lg font-black active:scale-95 transition-all flex items-center gap-2 flex-1 sm:flex-none"
+                            onClick={handleOrder}
+                        >
+                            <LucideShoppingBag className="size-5" />
+                            إضافة للسلة
+                        </Button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-min w-full">
                 <div className="flex flex-col gap-4 bg-card border rounded-xl h-full p-4">
                     <div className="relative flex items-center justify-center overflow-hidden w-full h-min">
@@ -132,7 +176,7 @@ export default function ProductDetailsClient({
                         </div>
                     </div>
 
-                    <div className="pt-4">
+                    <div className="pt-4" id="main-add-to-cart">
                         <div className="w-full flex flex-col md:flex-row gap-4 items-center p-0">
                             <div className="flex items-center bg-muted rounded-xl p-2 w-full w-min justify-between">
                                 <Button
