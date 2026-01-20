@@ -8,7 +8,7 @@ import { Clock } from "lucide-react";
 // Simplified design: clean background, no strong gradients
 const TimerUnit = ({ label, value }: { label: string; value: number }) => (
     <div className="flex flex-col items-center mx-2 md:mx-4">
-        <div className="bg-white dark:bg-gray-800 rounded-xl p-3 md:p-4 min-w-[60px] md:min-w-[80px] flex items-center justify-center relative shadow-sm border border-gray-100 dark:border-gray-700">
+        <div className="bg-muted-foreground rounded-full p-3 md:p-4 min-w-[60px] md:min-w-[80px] flex items-center justify-center relative shadow-sm border border-gray-100 dark:border-gray-700">
             <AnimatePresence mode="popLayout">
                 <motion.span
                     key={value}
@@ -32,7 +32,10 @@ const SecondsUnit = ({ label, value }: { label: string; value: number }) => (
     <div className="flex flex-col items-center mx-2 md:mx-4">
         <div className="relative p-3 md:p-4 min-w-[60px] md:min-w-[80px] flex items-center justify-center">
             {/* Subtle circular progress ring */}
-            <svg className="absolute inset-0 size-full -rotate-90 pointer-events-none" viewBox="0 0 100 100">
+            <svg
+                className="absolute inset-0 size-full -rotate-90 pointer-events-none"
+                viewBox="0 0 100 100"
+            >
                 <circle
                     cx="50"
                     cy="50"
@@ -97,7 +100,9 @@ export default function CountdownTimer() {
                 setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
             } else {
                 const hours = Math.floor(difference / (1000 * 60 * 60));
-                const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+                const minutes = Math.floor(
+                    (difference % (1000 * 60 * 60)) / (1000 * 60),
+                );
                 const seconds = Math.floor((difference % (1000 * 60)) / 1000);
                 setTimeLeft({ hours, minutes, seconds });
             }
@@ -107,29 +112,15 @@ export default function CountdownTimer() {
     }, []);
 
     return (
-        <div className="w-full flex flex-col md:flex-row items-center justify-between py-6 px-6 md:px-10 bg-white dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800 my-6 shadow-sm">
+        <div
+            className="w-full flex items-center justify-between gap-2"
+            dir="ltr"
+        >
+            <TimerUnit label="ساعات" value={timeLeft.hours} />
 
-            {/* Header / Text Section */}
-            <div className="flex flex-col items-center md:items-start gap-2 mb-6 md:mb-0">
-                <div className="flex items-center gap-2">
-                    <Clock className="size-5 text-teal-600 dark:text-teal-400" />
-                    <h3 className="text-lg md:text-xl font-bold text-gray-800 dark:text-gray-100">
-                        عروض اليوم
-                    </h3>
-                </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400 max-w-xs text-center md:text-right">
-                    اطلب الآن واستفيد من الخصومات قبل انتهاء الوقت.
-                </p>
-            </div>
+            <TimerUnit label="دقيقة" value={timeLeft.minutes} />
 
-            {/* Timer display */}
-            <div className="flex items-center gap-2" dir="ltr">
-                <TimerUnit label="ساعات" value={timeLeft.hours} />
-                <span className="text-2xl font-light text-gray-300 dark:text-gray-700 -mt-6">:</span>
-                <TimerUnit label="دقيقة" value={timeLeft.minutes} />
-                <span className="text-2xl font-light text-gray-300 dark:text-gray-700 -mt-6">:</span>
-                <SecondsUnit label="ثانية" value={timeLeft.seconds} />
-            </div>
+            <SecondsUnit label="ثانية" value={timeLeft.seconds} />
         </div>
     );
 }

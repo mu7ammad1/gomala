@@ -53,7 +53,6 @@ export async function getProductById(id: string): Promise<Product | null> {
         const decodedId = decodeURIComponent(id).trim();
         console.log(`--- Fetching Product By ID: ${decodedId} ---`);
         
-        // Fetch all products from both tables to ensure we don't miss anything due to complex queries
         const [{ data: productsData }, { data: productTableData }] = await Promise.all([
             supabase.from('products').select('*'),
             supabase.from('product').select('*')
@@ -65,7 +64,6 @@ export async function getProductById(id: string): Promise<Product | null> {
             const productData = item.json || item.product || item;
             const finalData = typeof productData === 'string' ? JSON.parse(productData) : productData;
             
-            // Normalize for comparison
             const itemId = String(item.id).trim().toLowerCase();
             const dataId = String(finalData.id).trim().toLowerCase();
             const dataSlug = String(finalData.slug || "").trim().toLowerCase();
