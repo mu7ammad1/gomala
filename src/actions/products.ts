@@ -53,8 +53,12 @@ export async function getProductById(id: string): Promise<Product | null> {
     try {
         console.log(`--- Fetching Product By ID: ${id} ---`);
         
-        // Try "products" table first (matches SQL dump)
-        // Search by top-level id (string/uuid) OR json->>id (string)
+        // Search in "products" table
+        // We use a broad search: 
+        // 1. Top level id column
+        // 2. Inside json column -> id field
+        // 3. Inside product column -> id field
+        // Using ilike for case-insensitive matching if it's a slug
         let { data, error } = await supabase
             .from('products')
             .select('*')
@@ -85,6 +89,8 @@ export async function getProductById(id: string): Promise<Product | null> {
                 image: finalData.image || data.image || "https://placehold.co/600x400/png"
             } as Product;
         }
+        
+        console.warn(`⚠️ Product with ID ${id} not found in database.`);
     } catch (e) {
         console.error("❌ Unexpected error in getProductById:", e);
     }
