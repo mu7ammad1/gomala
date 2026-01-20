@@ -48,7 +48,7 @@ export default function ProductDetailsClient({
 
     const displayGallery =
         (product.gallery?.filter((img) => img) || []).length > 0
-            ? product.gallery.filter((img) => img)
+            ? product.gallery!.filter((img) => img)
             : [mainImage].filter((img) => img);
 
     return (
@@ -199,7 +199,7 @@ export default function ProductDetailsClient({
                                 <img
                                     src={img}
                                     alt={`Review ${idx + 1}`}
-                                    className="w-full h-full object-contain hover:scale-[1.01] transition-transform duration-500"
+                                    className="w-full h-auto object-cover hover:scale-[1.01] transition-transform duration-500"
                                 />
                             </div>
                         ))}
