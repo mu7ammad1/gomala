@@ -22,7 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ product: 
 export default async function Page({ params }: { params: Promise<{ product: string }> }) {
   const resolvedParams = await params;
   const productId = resolvedParams.product;
-  const product = await getProductById(productId);
+  const product = await getProductById((await params).productparams);
 
   if (!product) {
     return (

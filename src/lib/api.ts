@@ -11,10 +11,13 @@ export async function getProducts(): Promise<Product[]> {
         return [];
     }
 
-    return (data as any[]).map(item => ({
-        ...(item.product || {}),
-        id: item.product?.id || item.id
-    })) as Product[];
+    return (data as any[]).map(item => {
+        const productData = item.json || item.product || {};
+        return {
+            ...productData,
+            id: productData.id || item.id
+        };
+    }) as Product[];
 }
 
 export async function getProductById(id: string): Promise<Product | null> {
@@ -22,7 +25,7 @@ export async function getProductById(id: string): Promise<Product | null> {
         const { data, error } = await supabase
             .from('products')
             .select('*')
-            .or(`id.eq."${id}",product->>id.eq."${id}"`)
+            .or(`id.eq."${id}",json->>id.eq."${id}",product->>id.eq."${id}"`)
             .maybeSingle();
 
         if (error) {
@@ -31,9 +34,10 @@ export async function getProductById(id: string): Promise<Product | null> {
         } 
         
         if (data) {
+            const productData = data.json || data.product || {};
             return {
-                ...(data.product || {}),
-                id: data.product?.id || data.id
+                ...productData,
+                id: productData.id || data.id
             } as Product;
         }
     } catch (e) {
