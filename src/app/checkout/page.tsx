@@ -171,7 +171,7 @@ function CheckoutContent() {
   }
 
   return (
-    <div className="min-h-screen w-full py-8 md:py-12 px-4 bg-background transition-colors duration-300 pb-24" dir="rtl">
+    <div className="min-h-screen w-full py-8 md:py-12 px-4 bg-background transition-colors duration-300 pb-24" dir="ltr">
       <div className="max-w-5xl mx-auto">
         <div className="text-center mb-8 md:mb-12">
           <h1 className="text-4xl font-black text-foreground mb-3 tracking-tight">
@@ -181,7 +181,7 @@ function CheckoutContent() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-10 bg-card p-1.5 h-16 rounded-[2rem] border shadow-md sticky top-24 z-40 backdrop-blur-md bg-card/80 transition-all">
+          <TabsList className="grid w-full grid-cols-2 mb-10 bg-card p-1.5 h-16 rounded-[2rem] border shadow-md sticky top-6 z-40 backdrop-blur-md bg-card/80 transition-all">
             <TabsTrigger
               value="cart"
               className="text-base font-bold rounded-3xl data-[state=active]:bg-primary data-[state=active]:text-white transition-all duration-300"
@@ -349,7 +349,7 @@ function CheckoutContent() {
                       </div>
 
                       <div className="grid md:grid-cols-3 gap-6">
-                        <div className="space-y-2">
+                        <div className="space-y-3 w-full">
                           <Label htmlFor="customerCity">المحافظة *</Label>
                           <Select
                             name="customerCity"
@@ -357,12 +357,12 @@ function CheckoutContent() {
                             onValueChange={handleCityChange}
                             required
                           >
-                            <SelectTrigger className="w-full rounded-xl h-12">
+                            <SelectTrigger className="w-full rounded-xl p-5 h-full">
                               <SelectValue placeholder="اختر المحافظة" />
                             </SelectTrigger>
-                            <SelectContent className="w-min" align="end">
+                            <SelectContent className="w-min" align="center">
                               {GOVERNORATES.map((gov) => (
-                                <SelectItem key={gov} value={gov} className="cursor-pointer" dir="rtl">
+                                <SelectItem key={gov} value={gov} className="cursor-pointer w-full p-2" dir="rtl">
                                   {gov}
                                 </SelectItem>
                               ))}

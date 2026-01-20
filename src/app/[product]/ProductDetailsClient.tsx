@@ -105,7 +105,7 @@ export default function ProductDetailsClient({
             </AnimatePresence>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-min w-full">
-                <div className="flex flex-col gap-4 bg-card border rounded-xl h-full p-4">
+                <div className="flex flex-col gap-4 bg-card rounded-2xl h-full p-5">
                     <div className="relative flex items-center justify-center overflow-hidden w-full h-min">
                         {mainImage && (
                             <motion.img
@@ -114,7 +114,7 @@ export default function ProductDetailsClient({
                                 alt={product.name}
                                 initial={{ opacity: 0.8 }}
                                 animate={{ opacity: 1 }}
-                                transition={{ duration: 0.3 }}
+                                transition={{ duration: 0.7 }}
                                 className="w-full max-h-[550px] object-contain cursor-pointer rounded-2xl"
                             />
                         )}
@@ -141,7 +141,7 @@ export default function ProductDetailsClient({
                         ))}
                     </div>
                 </div>
-                <div className="w-full flex flex-col bg-card rounded-xl border h-min p-4">
+                <div className="w-full flex flex-col bg-card rounded-2xl h-min p-5">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
                             كود المنتج: {product.code}
@@ -232,20 +232,20 @@ export default function ProductDetailsClient({
             </div>
 
             <div
-                className="w-full mt-12 bg-card rounded-xl p-4 border"
+                className="w-full mt-12 bg-card rounded-xl p-5"
                 id="reviews"
             >
-                <h2 className="text-4xl font-bold mb-6 flex items-center gap-2">
-                    <span>الآراء</span>
+                <h2 className="text-4xl font-bold mb-12 flex items-center gap-2">
+                    <span>ما يقوله عملاؤنا</span>
                 </h2>
 
                 {product.reviews?.review_images &&
                 product.reviews.review_images.length > 0 ? (
-                    <div className="flex flex-col gap-8 max-w-2xl mx-auto">
+                    <div className="w-full flex flex-col gap-8 mx-auto">
                         {product.reviews.review_images.map((img, idx) => (
                             <div
                                 key={idx}
-                                className="w-full rounded-xl overflow-hidden border bg-gray-50 shadow-sm"
+                                className="w-full rounded-xl overflow-hidden"
                             >
                                 <img
                                     src={img}

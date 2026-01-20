@@ -124,7 +124,7 @@ export default function OrdersAdminPage() {
   if (!isAuthorized) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background px-4" dir="rtl">
-        <div className="max-w-md w-full bg-card p-8 rounded-3xl shadow-xl border">
+        <div className="max-w-md w-full bg-card p-8 rounded-3xl shadow-xl">
           <div className="flex justify-center mb-6">
             <div className="bg-primary/10 p-4 rounded-full">
               <LucideLock size={32} className="text-primary" />
@@ -151,8 +151,8 @@ export default function OrdersAdminPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20 w-full" dir="rtl">
-      <div className="bg-[#A5B68D] pt-12 pb-20 px-4 text-white text-center">
+    <div className="min-h-screen bg-background pb-20 w-full" dir="ltr">
+      <div className="bg-card/50 pt-12 pb-20 px-4 text-white text-center">
         <LucideLayoutDashboard className="mx-auto size-12 mb-4 opacity-90" />
         <h1 className="text-3xl font-bold mb-2">إدارة الطلبات</h1>
         <p className="opacity-80">نظام الإشراف والمتابعة الشامل</p>
@@ -160,25 +160,25 @@ export default function OrdersAdminPage() {
 
       <div className="max-w-6xl mx-auto px-4 -mt-12">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-card p-6 rounded-3xl shadow-sm border text-center">
+          <div className="bg-card p-6 rounded-3xl shadow-sm text-center">
             <div className="text-muted-foreground text-sm mb-1">اليوم</div>
             <div className="text-2xl font-bold text-primary">{stats.daily.length}</div>
           </div>
-          <div className="bg-card p-6 rounded-3xl shadow-sm border text-center">
+          <div className="bg-card p-6 rounded-3xl shadow-sm text-center">
             <div className="text-muted-foreground text-sm mb-1">الأسبوع</div>
             <div className="text-2xl font-bold text-[#A5B68D]">{stats.weekly.length}</div>
           </div>
-          <div className="bg-card p-6 rounded-3xl shadow-sm border text-center">
+          <div className="bg-card p-6 rounded-3xl shadow-sm text-center">
             <div className="text-muted-foreground text-sm mb-1">الشهر</div>
             <div className="text-2xl font-bold text-blue-500">{stats.monthly.length}</div>
           </div>
-          <div className="bg-card p-6 rounded-3xl shadow-sm border text-center">
+          <div className="bg-card p-6 rounded-3xl shadow-sm text-center">
             <div className="text-muted-foreground text-sm mb-1">الإجمالي</div>
             <div className="text-2xl font-bold text-rose-500">{stats.total.length}</div>
           </div>
         </div>
 
-        <div className="bg-card rounded-3xl shadow-sm border overflow-hidden">
+        <div className="bg-card rounded-3xl shadow-sm overflow-hidden">
           <Tabs defaultValue="all" className="w-full" onValueChange={setActiveTab}>
             <div className="p-4 md:p-6 border-b flex flex-col md:flex-row justify-between items-center bg-muted/50 gap-4">
               <div className="flex items-center gap-4">
