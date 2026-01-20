@@ -83,7 +83,14 @@ export default function ProductDetailsClient({
                             />
                             <div>
                                 <h4 className="font-bold text-sm line-clamp-1">{product.name}</h4>
-                                <p className="text-primary font-black">{finalPrice.toLocaleString()} ج.م</p>
+                                <div className="flex items-center gap-2">
+                                    <p className="text-primary font-black">{finalPrice.toLocaleString()} ج.م</p>
+                                    {discountAmount > 0 && (
+                                        <span className="bg-rose-500 text-white px-2 py-0.5 rounded-full text-[10px] font-bold">
+                                            وفر {discountAmount} ج.م
+                                        </span>
+                                    )}
+                                </div>
                             </div>
                         </div>
                         <Button
