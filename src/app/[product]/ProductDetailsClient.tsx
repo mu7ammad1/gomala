@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useCart } from "@/hooks/use-cart";
@@ -14,7 +13,6 @@ export default function ProductDetailsClient({
 }: {
     product: Product;
 }) {
-    const router = useRouter();
     const { addToCart } = useCart();
 
     const [quantity, setQuantity] = useState(1);
@@ -50,7 +48,7 @@ export default function ProductDetailsClient({
 
     const displayGallery =
         (product.gallery?.filter((img) => img) || []).length > 0
-            ? product.gallery!.filter((img) => img)
+            ? product.gallery.filter((img) => img)
             : [mainImage].filter((img) => img);
 
     return (

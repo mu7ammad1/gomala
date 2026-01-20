@@ -7,7 +7,6 @@ export async function getProducts(): Promise<Product[]> {
     try {
         console.log('--- Fetching Products ---');
 
-        // Prefer "products" table as per user's SQL dump
         let { data, error } = await supabase.from('products').select('*');
 
         if (error || !data || data.length === 0) {
@@ -51,33 +50,43 @@ export async function getProducts(): Promise<Product[]> {
 
 export async function getProductById(id: string): Promise<Product | null> {
     try {
-        console.log(`--- Fetching Product By ID: ${id} ---`);
+        const decodedId = decodeURIComponent(id).trim();
+        console.log(`--- Fetching Product By ID: ${decodedId} ---`);
         
-        // Search in "products" table
-        // We use a broad search: 
-        // 1. Top level id column
-        // 2. Inside json column -> id field
-        // 3. Inside product column -> id field
-        // Using ilike for case-insensitive matching if it's a slug
+        // 1. Precise query using Supabase's arrow operator for JSON columns
+        // This is much faster and more accurate than fetching all rows
         let { data, error } = await supabase
             .from('products')
             .select('*')
-            .or(`id.eq."${id}",json->>id.eq."${id}",product->>id.eq."${id}"`)
+            .or(`id.eq."${decodedId}",json->>id.eq."${decodedId}",product->>id.eq."${decodedId}",json->>slug.eq."${decodedId}"`)
             .maybeSingle();
 
-        // Fallback to "product" table
+        // 2. Fallback to 'product' table
         if (!data) {
             const { data: altData } = await supabase
                 .from('product')
                 .select('*')
-                .or(`id.eq."${id}",json->>id.eq."${id}",product->>id.eq."${id}"`)
+                .or(`id.eq."${decodedId}",json->>id.eq."${decodedId}",product->>id.eq."${decodedId}",json->>slug.eq."${decodedId}"`)
                 .maybeSingle();
-            if (altData) data = altData;
+            data = altData;
+        }
+
+        // 3. Last resort: If the decoded ID is 46813 (the table ID for elmafioso-4-qadaa), 
+        // ensure we check specifically for that numeric ID as a string.
+        if (!data && !isNaN(Number(decodedId))) {
+             const { data: numericData } = await supabase
+                .from('products')
+                .select('*')
+                .eq('id', decodedId)
+                .maybeSingle();
+             data = numericData;
         }
 
         if (data) {
             const productData = data.json || data.product || data;
             const finalData = typeof productData === 'string' ? JSON.parse(productData) : productData;
+            
+            console.log('✅ Found product:', finalData.name, 'ID:', finalData.id);
 
             return {
                 ...finalData,
@@ -90,7 +99,7 @@ export async function getProductById(id: string): Promise<Product | null> {
             } as Product;
         }
         
-        console.warn(`⚠️ Product with ID ${id} not found in database.`);
+        console.warn(`⚠️ Product with ID ${decodedId} not found in database.`);
     } catch (e) {
         console.error("❌ Unexpected error in getProductById:", e);
     }
