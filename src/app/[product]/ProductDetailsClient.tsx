@@ -241,7 +241,7 @@ export default function ProductDetailsClient({
 
                 {product.reviews?.review_images &&
                 product.reviews.review_images.length > 0 ? (
-                    <div className="flex flex-col gap-8 max-w-2xl mx-auto">
+                    <div className="flex flex-col gap-8 w-full mx-auto">
                         {product.reviews.review_images.map((img, idx) => (
                             <div
                                 key={idx}
