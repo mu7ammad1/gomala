@@ -50,7 +50,7 @@ export default function ProductDetailsClient({
 
     const displayGallery =
         (product.gallery?.filter((img) => img) || []).length > 0
-            ? product.gallery.filter((img) => img)
+            ? product.gallery!.filter((img) => img)
             : [mainImage].filter((img) => img);
 
     return (
