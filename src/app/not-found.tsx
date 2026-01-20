@@ -8,10 +8,10 @@ export default function NotFound() {
       <p>انت بدور علي صفحة غير موجودة او كانت موجودة</p>
       <div className='flex gap-5'>
         <Button className='rounded-3xl' variant={"outline"} size={"lg"}>
-          <Link href="/feed">تواصل بالمبيعات</Link>
+          <Link href="/contact">تواصل بالمبيعات</Link>
         </Button>
         <Button className='rounded-3xl' variant={"default"} size={"lg"}>
-          <Link href="/feed">صفحة الرئيسية</Link>
+          <Link href="/">صفحة الرئيسية</Link>
         </Button>
       </div>
     </div>

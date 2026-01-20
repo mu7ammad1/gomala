@@ -11,6 +11,11 @@ export async function generateMetadata({ params }: { params: Promise<{ product: 
   return {
     title: product?.name || "المنتج",
     description: product?.description || "تفاصيل المنتج",
+    openGraph: {
+      images: [product?.image || "https://placehold.co/600x400/png"],
+      title: product?.name || "المنتج",
+      description: product?.description || "تفاصيل المنتج"
+    },
   };
 }
 

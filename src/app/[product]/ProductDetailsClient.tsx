@@ -9,7 +9,11 @@ import { motion } from "framer-motion";
 import { LucideShoppingBag } from "lucide-react";
 import { Product } from "@/types/supabase";
 
-export default function ProductDetailsClient({ product }: { product: Product }) {
+export default function ProductDetailsClient({
+    product,
+}: {
+    product: Product;
+}) {
     const router = useRouter();
     const { addToCart } = useCart();
 
@@ -44,14 +48,15 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
         }
     };
 
-    const displayGallery = (product.gallery?.filter(img => img) || []).length > 0
-        ? product.gallery.filter(img => img)
-        : [mainImage].filter(img => img);
+    const displayGallery =
+        (product.gallery?.filter((img) => img) || []).length > 0
+            ? product.gallery.filter((img) => img)
+            : [mainImage].filter((img) => img);
 
     return (
-        <div className="w-full mx-auto py-8 px-4">
+        <div className="w-full mx-auto py-8 px-4" dir="rtl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-min w-full">
-                <div className="flex flex-col gap-4 bg-muted/50 border rounded-xl h-full p-4">
+                <div className="flex flex-col gap-4 bg-card border rounded-xl h-full p-4">
                     <div className="relative flex items-center justify-center overflow-hidden w-full h-min">
                         {mainImage && (
                             <motion.img
@@ -61,33 +66,33 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                                 initial={{ opacity: 0.8 }}
                                 animate={{ opacity: 1 }}
                                 transition={{ duration: 0.3 }}
-                                className="w-full max-h-[550px] object-contain cursor-pointer rounded-xl"
+                                className="w-full max-h-[550px] object-contain cursor-pointer rounded-2xl"
                             />
                         )}
                     </div>
-                    <div className="flex gap-2 overflow-x-auto no-scrollbar justify-center">
+                    <div className="flex gap-2 overflow-x-none no-scrollbar justify-center">
                         {displayGallery.map((img, index) => (
                             <motion.div
                                 key={index + img}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className={`flex-shrink-0 size-14 rounded-xl border-2 transition-all duration-300 cursor-pointer overflow-hidden p-1.5 ${mainImage === img
-                                    ? "border-primary ring-2 ring-primary/20"
-                                    : "border-transparent bg-secondary/20 hover:border-primary/50"
-                                    }`}
+                                className={`flex-shrink-0 size-14 rounded-xl border-2 transition-all duration-300 cursor-pointer overflow-hidden p-1.5 ${
+                                    mainImage === img
+                                        ? "border-primary ring-2 ring-primary/20"
+                                        : "border-transparent bg-secondary/20 hover:border-primary/50"
+                                }`}
                                 onClick={() => setMainImage(img)}
                             >
                                 <img
                                     src={img}
                                     alt={`${product.name} ${index}`}
-                                    className="w-full h-full object-cover"
+                                    className="w-full h-full object-cover rounded-sm"
                                 />
                             </motion.div>
                         ))}
                     </div>
                 </div>
-
-                <div className="w-full flex flex-col bg-muted/50 rounded-xl border h-min p-4">
+                <div className="w-full flex flex-col bg-card rounded-xl border h-min p-4">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
                             كود المنتج: {product.code}
@@ -119,12 +124,14 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
 
                     <div className="space-y-6">
                         <div className="space-y-4">
-                            <h3 className="text-lg font-bold text-foreground border-r-4 border-primary pr-3">وصف المنتج</h3>
+                            <h3 className="text-lg font-bold text-foreground border-r-4 border-primary pr-3">
+                                وصف المنتج
+                            </h3>
                             <p className="text-muted-foreground leading-relaxed text-lg font-medium whitespace-pre-line">
-                                {product.description || "لا يوجد وصف متاح لهذا المنتج حالياً."}
+                                {product.description ||
+                                    "لا يوجد وصف متاح لهذا المنتج حالياً."}
                             </p>
                         </div>
-
                     </div>
 
                     <div className="pt-4">
@@ -143,9 +150,10 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                                     value={quantity}
                                     onChange={(e) => {
                                         const val = parseInt(e.target.value);
-                                        if (val >= 1 && val <= 40) setQuantity(val);
+                                        if (val >= 1 && val <= 40)
+                                            setQuantity(val);
                                     }}
-                                    className="w-16 text-center border-none shadow-none focus:ring-0 bg-transparent text-xl font-black text-foreground"
+                                    className="w-min text-center border-none shadow-none focus:ring-0 bg-muted dark:bg-muted text-xl font-black text-foreground [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                     min={1}
                                     max={40}
                                 />
@@ -174,26 +182,35 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                 </div>
             </div>
 
-            <div className="w-full mt-12 bg-card rounded-xl p-4 border" id="reviews">
-                <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
+            <div
+                className="w-full mt-12 bg-card rounded-xl p-4 border"
+                id="reviews"
+            >
+                <h2 className="text-4xl font-bold mb-6 flex items-center gap-2">
                     <span>الآراء</span>
                 </h2>
 
-                {product.reviews?.review_images && product.reviews.review_images.length > 0 ? (
+                {product.reviews?.review_images &&
+                product.reviews.review_images.length > 0 ? (
                     <div className="flex flex-col gap-8 max-w-2xl mx-auto">
                         {product.reviews.review_images.map((img, idx) => (
-                            <div key={idx} className="w-full rounded-xl overflow-hidden border bg-gray-50 shadow-sm">
+                            <div
+                                key={idx}
+                                className="w-full rounded-xl overflow-hidden border bg-gray-50 shadow-sm"
+                            >
                                 <img
                                     src={img}
                                     alt={`Review ${idx + 1}`}
-                                    className="w-full h-auto object-contain max-h-[500px] hover:scale-[1.01] transition-transform duration-500"
+                                    className="w-full h-full object-contain hover:scale-[1.01] transition-transform duration-500"
                                 />
                             </div>
                         ))}
                     </div>
                 ) : (
                     <div className="text-center py-12 bg-muted/20 rounded-xl border border-dashed">
-                        <p className="text-muted-foreground font-medium">لا توجد آراء مصورة لهذا المنتج حتى الآن.</p>
+                        <p className="text-muted-foreground font-medium">
+                            لا توجد آراء مصورة لهذا المنتج حتى الآن.
+                        </p>
                     </div>
                 )}
             </div>

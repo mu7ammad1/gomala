@@ -1,12 +1,12 @@
 entrypoint = "index.js"
-modules = ["nodejs-22", "postgresql-16"]
+modules = ["nodejs-20", "web"]
 hidden = [".config", "package-lock.json"]
 
 [gitHubImport]
 requiredFiles = [".replit", "replit.nix", "package.json", "package-lock.json"]
 
 [nix]
-channel = "stable-24_11"
+channel = "stable-25_05"
 
 [deployment]
 run = ["node", "index.js"]
@@ -54,3 +54,8 @@ localPort = 5000
 externalPort = 80
 
 [userenv]
+
+[userenv.shared]
+NEXT_PUBLIC_SUPABASE_URL = "https://brtwfnfqoisaiyruixzf.supabase.co"
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY = "sb_publishable_0q_48_IzQFCh9xHg8-xlJg_8qQb3K1W"
+NEXT_PUBLIC_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJydHdmbmZxb2lzYWl5cnVpeHpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjU2OTY2NjksImV4cCI6MjA4MTI3MjY2OX0.lh7v01xLTpVnt8XrEb1G2jv4TXn0pm8PtZnGBHggZZM"

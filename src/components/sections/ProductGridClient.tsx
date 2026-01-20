@@ -50,7 +50,7 @@ export default function ProductGridClient({ products }: ProductGridClientProps) 
                                 </div>
                             )}
 
-                            <Link href={`/product/${product.id}`} className="block w-full h-full">
+                            <Link href={`/${product.id}`} className="block w-full h-full">
                                 <img
                                     src={mainImage}
                                     alt={product.name}
@@ -70,7 +70,7 @@ export default function ProductGridClient({ products }: ProductGridClientProps) 
 
                         {/* Product Meta Data */}
                         <div className="flex flex-col flex-grow text-center md:text-right px-1">
-                            <Link href={`/product/${product.id}`} className="mb-1">
+                            <Link href={`/${product.id}`} className="mb-1">
                                 <h3 className="text-[13px] md:text-[14px] font-medium text-foreground/90 line-clamp-2 hover:underline decoration-1 underline-offset-4">
                                     {product.name}
                                 </h3>
@@ -89,7 +89,7 @@ export default function ProductGridClient({ products }: ProductGridClientProps) 
 
                             {/* Details Button for Mobile / Simple Focus */}
                             <div className="mt-4 md:mt-auto">
-                                <Link href={`/product/${product.id}`}>
+                                <Link href={`/${product.id}`}>
                                     <Button variant="outline" className="w-full h-9 text-[12px] font-bold border-black hover:bg-black hover:text-white transition-all rounded-sm md:hidden">
                                         التفاصيل
                                     </Button>
