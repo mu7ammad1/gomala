@@ -53,49 +53,41 @@ export async function getProductById(id: string): Promise<Product | null> {
         const decodedId = decodeURIComponent(id).trim();
         console.log(`--- Fetching Product By ID: ${decodedId} ---`);
         
-        // 1. Precise query using Supabase's arrow operator for JSON columns
-        // This is much faster and more accurate than fetching all rows
-        let { data, error } = await supabase
-            .from('products')
-            .select('*')
-            .or(`id.eq."${decodedId}",json->>id.eq."${decodedId}",product->>id.eq."${decodedId}",json->>slug.eq."${decodedId}"`)
-            .maybeSingle();
+        // Fetch all products from both tables to ensure we don't miss anything due to complex queries
+        const [{ data: productsData }, { data: productTableData }] = await Promise.all([
+            supabase.from('products').select('*'),
+            supabase.from('product').select('*')
+        ]);
 
-        // 2. Fallback to 'product' table
-        if (!data) {
-            const { data: altData } = await supabase
-                .from('product')
-                .select('*')
-                .or(`id.eq."${decodedId}",json->>id.eq."${decodedId}",product->>id.eq."${decodedId}",json->>slug.eq."${decodedId}"`)
-                .maybeSingle();
-            data = altData;
-        }
+        const allItems = [...(productsData || []), ...(productTableData || [])];
+        
+        const found = allItems.find(item => {
+            const productData = item.json || item.product || item;
+            const finalData = typeof productData === 'string' ? JSON.parse(productData) : productData;
+            
+            // Normalize for comparison
+            const itemId = String(item.id).trim().toLowerCase();
+            const dataId = String(finalData.id).trim().toLowerCase();
+            const dataSlug = String(finalData.slug || "").trim().toLowerCase();
+            const searchId = decodedId.toLowerCase();
 
-        // 3. Last resort: If the decoded ID is 46813 (the table ID for elmafioso-4-qadaa), 
-        // ensure we check specifically for that numeric ID as a string.
-        if (!data && !isNaN(Number(decodedId))) {
-             const { data: numericData } = await supabase
-                .from('products')
-                .select('*')
-                .eq('id', decodedId)
-                .maybeSingle();
-             data = numericData;
-        }
+            return itemId === searchId || dataId === searchId || dataSlug === searchId;
+        });
 
-        if (data) {
-            const productData = data.json || data.product || data;
+        if (found) {
+            const productData = found.json || found.product || found;
             const finalData = typeof productData === 'string' ? JSON.parse(productData) : productData;
             
             console.log('✅ Found product:', finalData.name, 'ID:', finalData.id);
 
             return {
                 ...finalData,
-                id: String(finalData.id || data.id),
-                name: finalData.name || data.name || "منتج بدون اسم",
-                price: Number(finalData.price || data.price) || 0,
-                discount: Number(finalData.discount || data.discount) || 0,
-                code: finalData.code || data.code || "---",
-                image: finalData.image || data.image || "https://placehold.co/600x400/png"
+                id: String(finalData.id || found.id),
+                name: finalData.name || found.name || "منتج بدون اسم",
+                price: Number(finalData.price || found.price) || 0,
+                discount: Number(finalData.discount || found.discount) || 0,
+                code: finalData.code || found.code || "---",
+                image: finalData.image || found.image || "https://placehold.co/600x400/png"
             } as Product;
         }
         
