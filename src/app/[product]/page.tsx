@@ -15,14 +15,14 @@ export async function generateMetadata({ params }: { params: Promise<{ product: 
       images: [product?.image || "https://placehold.co/600x400/png"],
       title: product?.name || "المنتج",
       description: product?.description || "تفاصيل المنتج"
-    },
+    }
   };
 }
 
 export default async function Page({ params }: { params: Promise<{ product: string }> }) {
   const resolvedParams = await params;
   const productId = resolvedParams.product;
-  const product = await getProductById((await params).productparams);
+  const product = await getProductById(productId);
 
   if (!product) {
     return (

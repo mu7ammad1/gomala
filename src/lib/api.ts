@@ -12,10 +12,11 @@ export async function getProducts(): Promise<Product[]> {
     }
 
     return (data as any[]).map(item => {
-        const productData = item.json || item.product || {};
+        const productData = item.json || item.product || item;
+        const finalData = typeof productData === 'string' ? JSON.parse(productData) : productData;
         return {
-            ...productData,
-            id: productData.id || item.id
+            ...finalData,
+            id: String(finalData.id || item.id)
         };
     }) as Product[];
 }
@@ -34,10 +35,11 @@ export async function getProductById(id: string): Promise<Product | null> {
         } 
         
         if (data) {
-            const productData = data.json || data.product || {};
+            const productData = data.json || data.product || data;
+            const finalData = typeof productData === 'string' ? JSON.parse(productData) : productData;
             return {
-                ...productData,
-                id: productData.id || data.id
+                ...finalData,
+                id: String(finalData.id || data.id)
             } as Product;
         }
     } catch (e) {
