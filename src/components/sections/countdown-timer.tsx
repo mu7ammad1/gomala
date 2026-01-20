@@ -108,20 +108,7 @@ export default function CountdownTimer() {
 
     return (
         <div className="w-full flex flex-col md:flex-row items-center justify-between py-6 px-6 md:px-10 bg-white dark:bg-gray-900/50 rounded-2xl border border-gray-100 dark:border-gray-800 my-6 shadow-sm">
-            <section className="pt-24 px-4 md:px-8">
-              <div className="max-w-5xl mx-auto text-center space-y-8">
-                <h2 className="text-5xl md:text-7xl font-bold tracking-tight leading-tight">
-                  عروض استثنائية. <br />
-                  <span className="text-muted-foreground">صُممت لتناسب يومك.</span>
-                </h2>
-                <div className="bg-[#f5f5f7] rounded-[3rem] p-8 md:p-16 flex flex-col items-center gap-8">
-                   <p className="text-2xl md:text-3xl font-medium max-w-2xl mx-auto">
-                     استمتع بخصومات حصرية لفترة محدودة على أحدث التكنولوجيا والمنتجات العصرية.
-                   </p>
-                   <CountdownTimer />
-                </div>
-              </div>
-            </section>
+
             {/* Header / Text Section */}
             <div className="flex flex-col items-center md:items-start gap-2 mb-6 md:mb-0">
                 <div className="flex items-center gap-2">

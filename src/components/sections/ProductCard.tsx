@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import {
   Card,
@@ -7,16 +9,17 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { LucideRat, LucideShoppingBag, LucideStar } from "lucide-react";
+import { LucideShoppingBag, LucideStar } from "lucide-react";
 import { Button } from "../ui/button";
 import { useCart } from "@/hooks/use-cart";
+import { motion } from "framer-motion";
 
 interface ProductCardProps {
-  id: number;
+  id: string | number;
   title: string;
   name: string;
   description: string;
-  price: string;
+  price: string | number;
   rate: number;
   imageUrl: string;
 }
@@ -24,96 +27,78 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({
   id,
   title,
-  description,
   price,
   rate,
   imageUrl,
 }) => {
   const { addToCart } = useCart();
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
     addToCart({
       id: id.toString(),
       name: title,
-      price: parseFloat(price.replace(/,/g, "")),
+      price: typeof price === 'string' ? parseFloat(price.replace(/,/g, "")) : price,
       quantity: 1,
       image: imageUrl,
     });
   };
 
   return (
-    <Card className="p-0 rounded-2xl shadow-none h-full gap-0">
-      <CardContent className="p-0 rounded-t-2xl h-full relative bg-secondary/10 justify-center items-center flex">
-        <Button
-          className="rounded-xl cursor-pointer absolute top-2 right-12 z-50"
-          variant={"secondary"}
-          size={"icon-sm"}
-        >
-          <LucideStar absoluteStrokeWidth />
-        </Button>
-        <Button
-          className="rounded-xl cursor-pointer absolute top-2 right-2 z-50"
-          variant={"secondary"}
-          size={"icon-sm"}
-          onClick={handleAddToCart}
-        >
-          <LucideShoppingBag absoluteStrokeWidth />
-        </Button>
-        <img
-          src={imageUrl}
-          alt={title}
-          className="w-full h-full aspect-square object-contain rounded-t-2xl max-h-96"
-        />
-      </CardContent>
-      <CardFooter className="p-3 grid gap-2 rounded-b-2xl bg-secondary h-full">
-        <CardTitle>
-          <p className="text-sm font-thin text-muted-foreground hidden">
-            Snickers & Shoes
-          </p>
-          <Link href={`/product/${id}`}>
-            <p className="text-normal font-[400] leading-6 text-foreground">{title}</p>
-          </Link>
-        </CardTitle>
-        <CardDescription className="text-sm gap-1 items-center w-full flex">
-          <LucideStar
-            size={14}
-            className={`stroke-orange-500 fill-orange-500 storke-none outline-none border-none inline`}
-          />
-          <LucideStar
-            size={14}
-            className={`stroke-orange-500 fill-orange-500 storke-none outline-none border-none inline`}
-          />
-          <LucideStar
-            size={14}
-            className={`stroke-orange-500 fill-orange-500 storke-none outline-none border-none inline`}
-          />
-          <LucideStar
-            size={14}
-            className={`stroke-orange-500 fill-orange-500 storke-none outline-none border-none inline`}
-          />
-          <LucideStar
-            size={14}
-            className={`stroke-orange-500 fill-orange-500 storke-none outline-none border-none inline`}
-          />
-          <span className="pl-2">{rate}</span>
-        </CardDescription>
-        <CardDescription className="text-sm flex gap-3 *:py-1 ">
-          <p className="text-base font-thin text-foreground">${price}</p>
-          <p className="text-base font-thin line-through text-muted-foreground">${price}</p>
-          <p className="text-base font-thin text-rose-400">-%20</p>
-        </CardDescription>
+    <motion.div
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.3 }}
+      className="group h-full"
+    >
+      <Card className="border-none shadow-none bg-[#f5f5f7] rounded-3xl overflow-hidden h-full flex flex-col">
+        <Link href={`/product/${id}`} className="flex-1 flex flex-col">
+          <CardContent className="p-8 flex-1 flex items-center justify-center relative min-h-[300px]">
+            <motion.img
+              whileHover={{ scale: 1.05 }}
+              transition={{ duration: 0.5 }}
+              src={imageUrl}
+              alt={title}
+              className="max-w-full max-h-full object-contain mix-blend-multiply"
+            />
+            <div className="absolute inset-0 bg-black/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+          </CardContent>
+          
+          <CardFooter className="p-8 pt-0 flex flex-col items-center text-center gap-4">
+            <div className="space-y-1">
+              <h3 className="text-xl font-semibold tracking-tight text-[#1d1d1f] line-clamp-2">
+                {title}
+              </h3>
+              <div className="flex items-center justify-center gap-1 text-orange-500">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <LucideStar
+                    key={i}
+                    size={14}
+                    className={i < Math.floor(rate) ? "fill-current" : "opacity-30"}
+                  />
+                ))}
+                <span className="text-xs text-muted-foreground ml-1">{rate}</span>
+              </div>
+            </div>
+            
+            <div className="flex items-baseline gap-2">
+              <span className="text-lg font-bold text-[#1d1d1f]">
+                {Number(price).toLocaleString()} ج.م
+              </span>
+            </div>
 
-        <Link href={`/product/${id}`} className="w-full">
-          <Button
-            className="rounded-xl cursor-pointer w-full"
-            variant={"outline"}
-            size={"lg"}
-          >
-            عرض التفاصيل
-          </Button>
+            <div className="flex gap-2 w-full pt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform translate-y-2 group-hover:translate-y-0">
+               <Button
+                className="flex-1 rounded-full bg-[#0071e3] hover:bg-[#0077ed] text-white py-6"
+                onClick={handleAddToCart}
+              >
+                إضافة للسلة
+              </Button>
+            </div>
+          </CardFooter>
         </Link>
-      </CardFooter>
-    </Card>
+      </Card>
+    </motion.div>
   );
 };
 
