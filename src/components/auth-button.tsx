@@ -46,6 +46,7 @@ export function SheetDemo() {
           variant={"outline"}
           size={"icon"}
           className="p-0 shadow-none rounded-full"
+          aria-label="Open user profile"
         >
           <LucideUser absoluteStrokeWidth />
         </Button>
@@ -90,6 +91,7 @@ export function SheetProfile() {
           size={"icon"}
           className="p-0 shadow-none rounded-full relative"
           data-cart-trigger
+          aria-label="Open shopping cart"
         >
           <LucideShoppingBag absoluteStrokeWidth />
           {totalItems > 0 && (
@@ -130,7 +132,13 @@ export function SheetProfile() {
                     <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</Button>
                     <span className="text-sm w-4 text-center">{item.quantity}</span>
                     <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</Button>
-                    <Button variant="ghost" size="icon" className="size-7 text-muted-foreground hover:text-rose-500 mr-auto" onClick={() => removeFromCart(item.id)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 text-muted-foreground hover:text-rose-500 mr-auto"
+                      onClick={() => removeFromCart(item.id)}
+                      aria-label={`Remove ${item.name} from cart`}
+                    >
                       <LucideTrash2 size={14} />
                     </Button>
                   </div>
