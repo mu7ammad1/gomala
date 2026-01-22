@@ -2,16 +2,21 @@
 
 import Link from "next/link";
 import { Product } from "@/types/supabase";
-import { LucidePlus } from "lucide-react";
+import { LucidePlus, LucideHeart } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
-import { motion } from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { Button } from "../ui/button";
+import { useState } from "react";
 
 interface ProductGridClientProps {
   products: Product[];
 }
 
-export default function ProductGridClient({ products }: ProductGridClientProps) {
+export default function ProductGridClient({
+  products,
+}: ProductGridClientProps) {
   const { addToCart } = useCart();
+  const [hoveredId, setHoveredId] = useState<string | null>(null);
 
   const handleQuickAdd = (product: Product, price: number) => {
     addToCart({
@@ -22,75 +27,196 @@ export default function ProductGridClient({ products }: ProductGridClientProps) 
       image: product.image || "https://placehold.co/600x400/png",
     });
 
-    const cartButton = document.querySelector("[data-cart-trigger]") as HTMLButtonElement;
+    const cartButton = document.querySelector(
+      "[data-cart-trigger]",
+    ) as HTMLButtonElement;
     if (cartButton) cartButton.click();
   };
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 w-full p-4 bg-[#f5f5f7] dark:bg-[#000000] transition-colors duration-500">
-      {products.map((product, index) => {
-        const discountAmount = product.discount || 0;
-        const finalPrice = product.price - discountAmount;
-        const mainImage = product.image || "https://placehold.co/600x400/png";
+    <div className="py-8" dir="rtl">
+      <div className="w-full h-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+        {products.map((product, index) => {
+          const discountAmount = product.discount || 0;
+          const finalPrice = product.price - discountAmount;
+          const mainImage = product.image || "https://placehold.co/600x400/png";
+          const discountPercentage =
+            discountAmount > 0
+              ? Math.round((discountAmount / product.price) * 100)
+              : 0;
 
-        return (
-          <motion.div
-            key={product.id}
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: index * 0.05 }}
-            className="group relative flex flex-col bg-white dark:bg-[#1c1c1e] rounded-[28px] p-4 transition-all"
-          >
-            {/* Badge - Apple Style (Subtle) */}
-            {discountAmount > 0 && (
-              <span className="absolute top-6 right-6 z-10 text-[11px] font-bold tracking-tight text-orange-600 dark:text-orange-400 bg-orange-50 dark:bg-orange-400/10 px-2.5 py-1 rounded-full uppercase">
-                توفير {discountAmount} ج.م
-              </span>
-            )}
-
-            {/* Image Container */}
-            <Link href={`/${product.id}`} className="relative aspect-[4/3] mb-8 overflow-hidden flex items-center justify-center bg-transparent">
-              <img
-                src={mainImage}
-                alt={product.name}
-                className="w-full h-full object-contain mix-blend-multiply dark:mix-blend-normal transform transition-transform duration-700 ease-out group-hover:scale-110 drop-shadow-3xl"
-              />
-            </Link>
-
-            {/* Product Meta Data */}
-            <div className="flex flex-col items-center text-center flex-grow">
-              <Link href={`/${product.id}`} className="group-hover:opacity-70 transition-opacity">
-                <h3 className="text-[17px] md:text-[19px] font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-2 leading-tight">
-                  {product.name}
-                </h3>
-              </Link>
-
-              <div className="flex flex-col items-center gap-1 mb-8">
-                <span className="text-[17px] font-medium text-[#1d1d1f] dark:text-[#f5f5f7]">
-                   {finalPrice.toLocaleString()} ج.م
-                </span>
-                {discountAmount > 0 && (
-                  <span className="text-[14px] text-[#86868b] dark:text-[#a1a1a6] line-through">
-                    {product.price.toLocaleString()} ج.م
-                  </span>
-                )}
-              </div>
-
-              {/* Action Buttons - Apple Style Pill Buttons */}
-              <div className="mt-auto flex flex-col w-full gap-4">
-                <button
-                  onClick={() => handleQuickAdd(product, finalPrice)}
-                  className="w-full bg-[#0071e3] hover:bg-[#0077ed] dark:bg-[#0071e3] dark:hover:bg-[#0077ed] text-white text-[14px] font-medium py-2.5 rounded-full transition-all duration-300 transform active:scale-95 flex items-center justify-center gap-2"
-                >
-                  <LucidePlus className="size-4" />
-                  أضف للسلة
-                </button>
-              </div>
-            </div>
-          </motion.div>
-        );
-      })}
+          return (
+            <ProductCard
+              key={product.id}
+              product={product}
+              index={index}
+              mainImage={mainImage}
+              finalPrice={finalPrice}
+              discountAmount={discountAmount}
+              discountPercentage={discountPercentage}
+              isHovered={hoveredId === product.id}
+              onHover={() => setHoveredId(product.id)}
+              onLeave={() => setHoveredId(null)}
+              onQuickAdd={() => handleQuickAdd(product, finalPrice)}
+            />
+          );
+        })}
+      </div>
     </div>
+  );
+}
+
+interface ProductCardProps {
+  product: Product;
+  index: number;
+  mainImage: string;
+  finalPrice: number;
+  discountAmount: number;
+  discountPercentage: number;
+  isHovered: boolean;
+  onHover: () => void;
+  onLeave: () => void;
+  onQuickAdd: () => void;
+}
+
+function ProductCard({
+  product,
+  index,
+  mainImage,
+  finalPrice,
+  discountAmount,
+  discountPercentage,
+  isHovered,
+  onHover,
+  onLeave,
+  onQuickAdd,
+}: ProductCardProps) {
+  const x = useMotionValue(0);
+  const y = useMotionValue(0);
+
+  const mouseXSpring = useSpring(x, { stiffness: 300, damping: 30 });
+  const mouseYSpring = useSpring(y, { stiffness: 300, damping: 30 });
+
+  const rotateX = useTransform(mouseYSpring, [-0.5, 0.5], [5, -5]);
+  const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], [-5, 5]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    const width = rect.width;
+    const height = rect.height;
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+    const xPct = mouseX / width - 0.5;
+    const yPct = mouseY / height - 0.5;
+    x.set(xPct);
+    y.set(yPct);
+  };
+
+  const handleMouseLeave = () => {
+    x.set(0);
+    y.set(0);
+    onLeave();
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{
+        duration: 0.5,
+        delay: index * 0.03,
+        ease: [0.22, 1, 0.36, 1],
+      }}
+      onMouseMove={handleMouseMove}
+      onMouseEnter={onHover}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        rotateX: isHovered ? rotateX : 0,
+        rotateY: isHovered ? rotateY : 0,
+        transformStyle: "preserve-3d",
+      }}
+      className="w-full h-full flex flex-col bg-white dark:bg-[#1d1d1f] rounded-3xl duration-300 hover:shadow-2xl hover:shadow-black/10 dark:hover:shadow-black/30 p-3"
+    >
+      {/* Discount Badge */}
+      {discountAmount > 0 && (
+        <motion.div
+          initial={{ scale: 0, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{
+            delay: 0.2 + index * 0.03,
+            type: "spring",
+            stiffness: 200,
+          }}
+          className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-gradient-to-br from-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full shadow-lg"
+        >
+          <span className="text-xs font-bold tracking-tight">
+            -{discountPercentage}%
+          </span>
+        </motion.div>
+      )}
+
+      {/* Image Container */}
+      <Link
+        href={`/${product.id}`}
+        className="relative aspect-[4/3] rounded-3xl"
+      >
+        <motion.div
+          whileHover={{ scale: 1 }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <img
+            src={mainImage}
+            alt={product.name}
+            loading="lazy"
+            className="w-full h-full object-contain p-2 rounded-3xl  "
+          />
+        </motion.div>
+
+        {/* Gradient Overlay on Hover */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: isHovered ? 0.05 : 0 }}
+          className="absolute inset-0 bg-gradient-to-t from-black to-transparent pointer-events-none"
+        />
+      </Link>
+
+      {/* Content */}
+      <div className="flex flex-col p-5 pt-4">
+        {/* Product Name */}
+        <Link href={`/${product.id}`}>
+          <motion.h3
+            className="text-3xl font-semibold tracking-tight text-[#1d1d1f] dark:text-[#f5f5f7] mb-2 leading-tight line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors"
+            whileHover={{ x: 2 }}
+            transition={{ duration: 0.2 }}
+          >
+            {product.name}
+          </motion.h3>
+        </Link>
+
+        {/* Pricing */}
+        <div className="flex items-baseline gap-2 mb-4">
+          <span className="text-2xl font-semibold text-[#1d1d1f] dark:text-[#f5f5f7]">
+            {finalPrice.toLocaleString()}
+            <span className="text-sm font-normal mr-1">ج.م</span>
+          </span>
+          {discountAmount > 0 && (
+            <span className="text-sm text-[#86868b] dark:text-[#6e6e73] line-through">
+              {product.price.toLocaleString()}
+            </span>
+          )}
+        </div>
+
+        {/* Action Buttons */}
+          <Button
+            onClick={onQuickAdd}
+            className="flex-1 font-medium rounded-full transition-all duration-200 h-11 text-base active:scale-95"
+            aria-label={`أضف ${product.name} للسلة`}
+          >
+            <LucidePlus className="w-4 h-4 ml-1.5" />
+            أضف للسلة
+          </Button>
+      </div>
+    </motion.div>
   );
 }

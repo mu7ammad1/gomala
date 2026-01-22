@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { LucideStar } from "lucide-react";
 
 const TimerUnit = ({ label, value }: { label: string; value: number }) => (
-    <div className="flex flex-col items-center mx-2 md:mx-4">
+    <div className="flex flex-col items-center mx-2 md:mx-4 scale-130">
         <div className="bg-muted rounded-full p-3 md:p-4 min-w-[60px] md:min-w-[80px] flex items-center justify-center relative">
             <AnimatePresence mode="popLayout">
                 <motion.span
@@ -24,9 +25,8 @@ const TimerUnit = ({ label, value }: { label: string; value: number }) => (
     </div>
 );
 
-// Enhanced seconds unit with subtle progress ring
 const SecondsUnit = ({ label, value }: { label: string; value: number }) => (
-    <div className="flex flex-col items-center mx-2 md:mx-4">
+    <div className="flex flex-col items-center mx-2 md:mx-4 scale-130">
         <div className="relative p-3 md:p-4 min-w-[60px] md:min-w-[80px] flex items-center justify-center">
             {/* Subtle circular progress ring */}
             <svg
@@ -110,7 +110,7 @@ export default function CountdownTimer() {
 
     return (
         <div
-            className="w-full flex items-center justify-between gap-2"
+            className="w-full flex items-start justify-between gap-2 h-full"
             dir="ltr"
         >
             <TimerUnit label="ساعات" value={timeLeft.hours} />

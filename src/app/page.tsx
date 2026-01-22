@@ -33,7 +33,6 @@ export default async function HomeScreen() {
         </div>
       </section>
       <ProductGridClient products={products} />
-      {/* <EventCard /> */}
     </div>
   );
 }
