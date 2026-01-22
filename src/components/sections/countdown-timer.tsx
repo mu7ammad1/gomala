@@ -79,14 +79,16 @@ const SecondsUnit = ({ label, value }: { label: string; value: number }) => (
 
 export default function CountdownTimer() {
     const [timeLeft, setTimeLeft] = useState({
-        hours: 24,
+        days: 0,
+        hours: 0,
         minutes: 0,
         seconds: 0,
     });
 
     useEffect(() => {
-        // Set target time to 24 hours from now for demonstration
-        const targetTime = new Date().getTime() + 24 * 60 * 60 * 1000;
+        // Target date: 1/22/2026 8:50 PM
+        const targetDate = new Date("2026-01-22T20:50:00");
+        const targetTime = targetDate.getTime();
 
         const timer = setInterval(() => {
             const now = new Date().getTime();
@@ -94,14 +96,17 @@ export default function CountdownTimer() {
 
             if (difference <= 0) {
                 clearInterval(timer);
-                setTimeLeft({ hours: 0, minutes: 0, seconds: 0 });
+                setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
             } else {
-                const hours = Math.floor(difference / (1000 * 60 * 60));
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor(
+                    (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+                );
                 const minutes = Math.floor(
                     (difference % (1000 * 60 * 60)) / (1000 * 60),
                 );
                 const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-                setTimeLeft({ hours, minutes, seconds });
+                setTimeLeft({ days, hours, minutes, seconds });
             }
         }, 1000);
 
@@ -113,6 +118,7 @@ export default function CountdownTimer() {
             className="w-full flex items-start justify-between gap-2 h-full"
             dir="ltr"
         >
+            {timeLeft.days > 0 && <TimerUnit label="أيام" value={timeLeft.days} />}
             <TimerUnit label="ساعات" value={timeLeft.hours} />
             <TimerUnit label="دقيقة" value={timeLeft.minutes} />
             <SecondsUnit label="ثانية" value={timeLeft.seconds} />
