@@ -85,8 +85,8 @@ export default function CountdownTimer() {
     });
 
     useEffect(() => {
-        // Target date: 1/22/2026 8:50 PM
-        const targetDate = new Date("2026-01-22T20:50:00");
+        // Target date: 2/19/2026 8:50 PM
+        const targetDate = new Date("2026-02-19T20:50:00");
         const targetTime = targetDate.getTime();
 
         const timer = setInterval(() => {
