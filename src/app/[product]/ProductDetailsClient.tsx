@@ -105,7 +105,7 @@ export default function ProductDetailsClient({
             </AnimatePresence>
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-min w-full">
-                <div className="flex flex-col gap-4 bg-card rounded-2xl h-full p-5">
+                <div className="flex flex-col gap-4 dark:bg-card bg-muted rounded-2xl h-full p-5">
                     <div className="relative flex items-center justify-center overflow-hidden w-full h-min">
                         {mainImage && (
                             <motion.img
@@ -141,7 +141,7 @@ export default function ProductDetailsClient({
                         ))}
                     </div>
                 </div>
-                <div className="w-full flex flex-col bg-card rounded-2xl h-min p-5">
+                <div className="w-full flex flex-col dark:bg-card bg-muted rounded-2xl h-min p-5">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
                             كود المنتج: {product.code}
@@ -232,7 +232,7 @@ export default function ProductDetailsClient({
             </div>
 
             <div
-                className="w-full mt-12 bg-card rounded-xl p-5"
+                className="w-full mt-12 dark:bg-card bg-muted rounded-xl p-5"
                 id="reviews"
             >
                 <h2 className="text-4xl font-bold mb-12 flex items-center gap-2">

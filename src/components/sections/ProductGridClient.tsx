@@ -136,7 +136,7 @@ function ProductCard({
         rotateY: isHovered ? rotateY : 0,
         transformStyle: "preserve-3d",
       }}
-      className="w-full h-full flex flex-col bg-white dark:bg-[#1d1d1f] rounded-3xl duration-300 hover:shadow-2xl hover:shadow-black/10 dark:hover:shadow-black/30 p-3"
+      className="w-full h-full flex flex-col dark:bg-card bg-muted rounded-3xl duration-300 p-3 "
     >
       {/* Discount Badge */}
       {discountAmount > 0 && (
@@ -148,7 +148,7 @@ function ProductCard({
             type: "spring",
             stiffness: 200,
           }}
-          className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-gradient-to-br from-orange-500 to-red-500 text-white px-3 py-1.5 rounded-full shadow-lg"
+          className="absolute top-4 left-4 z-20 flex items-center gap-1.5 bg-orange-500 text-white px-3 py-1.5 rounded-full"
         >
           <span className="text-xs font-bold tracking-tight">
             -{discountPercentage}%
@@ -171,14 +171,7 @@ function ProductCard({
             loading="lazy"
             className="w-full h-full object-contain p-2 rounded-3xl  "
           />
-        </motion.div>
-
-        {/* Gradient Overlay on Hover */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: isHovered ? 0.05 : 0 }}
-          className="absolute inset-0 bg-gradient-to-t from-black to-transparent pointer-events-none"
-        />
+        </motion.div>        
       </Link>
 
       {/* Content */}

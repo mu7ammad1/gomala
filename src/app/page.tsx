@@ -23,7 +23,7 @@ export default async function HomeScreen() {
             عروض استثنائية. <br />
             <span className="text-muted-foreground">صُممت لتناسب يومك.</span>
           </h2>
-          <div className="bg-card rounded-[3rem] p-8 md:p-16 flex flex-col items-center gap-8">
+          <div className="dark:bg-card bg-muted rounded-[3rem] p-8 md:p-16 flex flex-col items-center gap-8">
             <p className="text-2xl md:text-3xl font-medium max-w-2xl mx-auto">
               استمتع بخصومات حصرية لفترة محدودة على أحدث التكنولوجيا والمنتجات
               العصرية.
