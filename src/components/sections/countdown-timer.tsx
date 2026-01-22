@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { LucideStar } from "lucide-react";
 
 const TimerUnit = ({ label, value }: { label: string; value: number }) => (
     <div className="flex flex-col items-center mx-2 md:mx-4 scale-130">
