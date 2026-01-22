@@ -4,17 +4,25 @@ import ProductDetailsClient from "./ProductDetailsClient";
 import { LucideShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 
 export async function generateMetadata({ params }: { params: Promise<{ product: string }> }): Promise<Metadata> {
   const resolvedParams = await params;
   const product = await getProductById(resolvedParams.product);
+  
+  if (!product) {
+    return {
+      title: "المنتج غير موجود",
+    };
+  }
+
   return {
-    title: product?.name || "المنتج",
-    description: product?.description || "تفاصيل المنتج",
+    title: product.name,
+    description: product.description || "تفاصيل المنتج",
     openGraph: {
-      images: [product?.image || "https://placehold.co/600x400/png"],
-      title: product?.name || "المنتج",
-      description: product?.description || "تفاصيل المنتج"
+      images: [product.image || "https://placehold.co/600x400/png"],
+      title: product.name,
+      description: product.description || "تفاصيل المنتج"
     }
   };
 }
@@ -22,28 +30,17 @@ export async function generateMetadata({ params }: { params: Promise<{ product: 
 export default async function Page({ params }: { params: Promise<{ product: string }> }) {
   const resolvedParams = await params;
   const productId = resolvedParams.product;
+  
+  // Server-side data fetching
   const product = await getProductById(productId);
 
   if (!product) {
-    return (
-      <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
-        <div className="bg-secondary/20 p-6 rounded-full">
-          <LucideShoppingBag className="size-12 text-muted-foreground" />
-        </div>
-        <h2 className="text-2xl font-bold text-center">
-          عذراً، هذا المنتج غير متوفر حالياً
-        </h2>
-        <p className="text-muted-foreground text-center">
-          ربما تم حذف المنتج أو الرابط غير صحيح.
-        </p>
-        <Link href="/">
-          <Button variant="default">
-            العودة للرئيسية
-          </Button>
-        </Link>
-      </div>
-    );
+    notFound();
   }
 
-  return <ProductDetailsClient product={product} />;
+  return (
+    <div className="min-h-screen bg-background">
+      <ProductDetailsClient product={product} />
+    </div>
+  );
 }
