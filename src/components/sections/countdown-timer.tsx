@@ -85,47 +85,31 @@ export default function CountdownTimer() {
     });
 
     useEffect(() => {
-        const fetchTargetDate = async () => {
-            try {
-                const res = await fetch("/api/settings");
-                const data = await res.json();
-                if (data?.date) {
-                    startTimer(new Date(data.date).getTime());
-                } else {
-                    // Fallback to static date if not found
-                    startTimer(new Date("2026-01-22T20:50:00").getTime());
-                }
-            } catch (error) {
-                console.error("Error fetching countdown target:", error);
-                startTimer(new Date("2026-01-22T20:50:00").getTime());
+        // Target date: 1/22/2026 8:50 PM
+        const targetDate = new Date("2026-01-22T20:50:00");
+        const targetTime = targetDate.getTime();
+
+        const timer = setInterval(() => {
+            const now = new Date().getTime();
+            const difference = targetTime - now;
+
+            if (difference <= 0) {
+                clearInterval(timer);
+                setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
+            } else {
+                const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+                const hours = Math.floor(
+                    (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
+                );
+                const minutes = Math.floor(
+                    (difference % (1000 * 60 * 60)) / (1000 * 60),
+                );
+                const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+                setTimeLeft({ days, hours, minutes, seconds });
             }
-        };
+        }, 1000);
 
-        const startTimer = (targetTime: number) => {
-            const timer = setInterval(() => {
-                const now = new Date().getTime();
-                const difference = targetTime - now;
-
-                if (difference <= 0) {
-                    clearInterval(timer);
-                    setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0 });
-                } else {
-                    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-                    const hours = Math.floor(
-                        (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60),
-                    );
-                    const minutes = Math.floor(
-                        (difference % (1000 * 60 * 60)) / (1000 * 60),
-                    );
-                    const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-                    setTimeLeft({ days, hours, minutes, seconds });
-                }
-            }, 1000);
-
-            return () => clearInterval(timer);
-        };
-
-        fetchTargetDate();
+        return () => clearInterval(timer);
     }, []);
 
     return (

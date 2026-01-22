@@ -28,7 +28,7 @@ export default async function HomeScreen() {
               استمتع بخصومات حصرية لفترة محدودة على أحدث التكنولوجيا والمنتجات
               العصرية.
             </p>
-            <div/>
+            <CountdownTimer />
           </div>
         </div>
       </section>

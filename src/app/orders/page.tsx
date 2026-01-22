@@ -42,45 +42,9 @@ export default function OrdersAdminPage() {
     }
   };
 
-  const [countdownDate, setCountdownDate] = useState("");
-  const [updatingSettings, setUpdatingSettings] = useState(false);
-
-  const fetchSettings = async () => {
-    try {
-      const res = await fetch("/api/settings");
-      const data = await res.json();
-      if (data?.date) {
-        setCountdownDate(data.date.slice(0, 16)); // Format for datetime-local
-      }
-    } catch (error) {
-      console.error("Error fetching settings:", error);
-    }
-  };
-
-  const updateSettings = async () => {
-    setUpdatingSettings(true);
-    try {
-      const res = await fetch("/api/settings", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ date: countdownDate }),
-      });
-      if (res.ok) {
-        toast.success("تم تحديث تاريخ العداد بنجاح");
-      } else {
-        toast.error("فشل تحديث العداد");
-      }
-    } catch (error) {
-      toast.error("حدث خطأ أثناء التحديث");
-    } finally {
-      setUpdatingSettings(false);
-    }
-  };
-
   const fetchOrders = async () => {
     try {
       setLoading(true);
-      fetchSettings(); // Fetch settings along with orders
       const response = await fetch("/api/orders");
 
       if (!response.ok) {
@@ -211,32 +175,6 @@ export default function OrdersAdminPage() {
           <div className="bg-card p-6 rounded-3xl shadow-sm text-center">
             <div className="text-muted-foreground text-sm mb-1">الإجمالي</div>
             <div className="text-2xl font-bold text-rose-500">{stats.total.length}</div>
-          </div>
-        </div>
-
-        {/* Countdown Timer Control Section */}
-        <div className="bg-card p-6 rounded-3xl shadow-sm mb-8 border-2 border-primary/20">
-          <h2 className="text-xl font-bold mb-4 flex items-center gap-2 text-foreground">
-            <LucideClock className="text-primary" />
-            إدارة عداد الوقت (Countdown)
-          </h2>
-          <div className="flex flex-col md:flex-row gap-4 items-end">
-            <div className="flex-1 space-y-2">
-              <label className="text-sm text-muted-foreground px-2">تاريخ انتهاء العداد</label>
-              <Input
-                type="datetime-local"
-                value={countdownDate}
-                onChange={(e) => setCountdownDate(e.target.value)}
-                className="rounded-xl bg-background"
-              />
-            </div>
-            <Button 
-              onClick={updateSettings} 
-              disabled={updatingSettings}
-              className="rounded-xl px-8 h-12 font-bold"
-            >
-              {updatingSettings ? "جاري التحديث..." : "حفظ التاريخ"}
-            </Button>
           </div>
         </div>
 
