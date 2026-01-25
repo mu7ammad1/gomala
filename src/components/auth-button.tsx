@@ -90,6 +90,7 @@ export function SheetProfile() {
           size={"icon"}
           className="p-0 shadow-none rounded-full relative"
           data-cart-trigger
+          aria-label="Shopping cart"
         >
           <LucideShoppingBag absoluteStrokeWidth />
           {totalItems > 0 && (
@@ -127,10 +128,10 @@ export function SheetProfile() {
                   <h4 className="text-sm font-medium line-clamp-1">{item.name}</h4>
                   <p className="text-rose-500 font-bold">{item.price.toLocaleString()} EGP</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</Button>
+                    <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity - 1)} aria-label="Decrease quantity by one">-</Button>
                     <span className="text-sm w-4 text-center">{item.quantity}</span>
-                    <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</Button>
-                    <Button variant="ghost" size="icon" className="size-7 text-muted-foreground hover:text-rose-500 mr-auto" onClick={() => removeFromCart(item.id)}>
+                    <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity + 1)} aria-label="Increase quantity by one">+</Button>
+                    <Button variant="ghost" size="icon" className="size-7 text-muted-foreground hover:text-rose-500 mr-auto" onClick={() => removeFromCart(item.id)} aria-label="Remove item from cart">
                       <LucideTrash2 size={14} />
                     </Button>
                   </div>
