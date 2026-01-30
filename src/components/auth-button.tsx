@@ -46,6 +46,7 @@ export function SheetDemo() {
           variant={"outline"}
           size={"icon"}
           className="p-0 shadow-none rounded-full"
+          aria-label="الملف الشخصي"
         >
           <LucideUser absoluteStrokeWidth />
         </Button>
@@ -90,6 +91,7 @@ export function SheetProfile() {
           size={"icon"}
           className="p-0 shadow-none rounded-full relative"
           data-cart-trigger
+          aria-label="فتح سلة التسوق"
         >
           <LucideShoppingBag absoluteStrokeWidth />
           {totalItems > 0 && (
@@ -113,7 +115,12 @@ export function SheetProfile() {
           {cart.length === 0 ? (
             <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
               <LucideShoppingBag size={48} className="mb-2 opacity-20" />
-              <p>السلة فارغة</p>
+              <p className="mb-4">السلة فارغة</p>
+              <SheetClose asChild>
+                <Button variant="outline" className="rounded-full">
+                  تسوق الآن
+                </Button>
+              </SheetClose>
             </div>
           ) : (
             cart.map((item) => (
@@ -127,10 +134,32 @@ export function SheetProfile() {
                   <h4 className="text-sm font-medium line-clamp-1">{item.name}</h4>
                   <p className="text-rose-500 font-bold">{item.price.toLocaleString()} EGP</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="size-7 rounded-full"
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      aria-label="تقليل الكمية"
+                    >
+                      -
+                    </Button>
                     <span className="text-sm w-4 text-center">{item.quantity}</span>
-                    <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</Button>
-                    <Button variant="ghost" size="icon" className="size-7 text-muted-foreground hover:text-rose-500 mr-auto" onClick={() => removeFromCart(item.id)}>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="size-7 rounded-full"
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      aria-label="زيادة الكمية"
+                    >
+                      +
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 text-muted-foreground hover:text-rose-500 mr-auto"
+                      onClick={() => removeFromCart(item.id)}
+                      aria-label="إزالة المنتج"
+                    >
                       <LucideTrash2 size={14} />
                     </Button>
                   </div>
