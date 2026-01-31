@@ -49,12 +49,18 @@ const ThemeSwitcher = () => {
     return null;
   }
 
+  const themeNames: Record<Mode, string> = {
+    light: "فاتح",
+    dark: "داكن",
+    system: "تلقائي",
+  };
+
   return (
     <Button
       variant="secondary"
       size="icon-lg"
       onClick={cycleTheme}
-      aria-label={`Switch theme: ${currentTheme} → ${nextTheme}`}
+      aria-label={`تبديل المظهر: من ${themeNames[currentTheme]} إلى ${themeNames[nextTheme]}`}
     >
       {currentTheme === "light" ? (
         <Sun
