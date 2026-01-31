@@ -46,6 +46,7 @@ export function SheetDemo() {
           variant={"outline"}
           size={"icon"}
           className="p-0 shadow-none rounded-full"
+          aria-label="الملف الشخصي"
         >
           <LucideUser absoluteStrokeWidth />
         </Button>
@@ -90,6 +91,7 @@ export function SheetProfile() {
           size={"icon"}
           className="p-0 shadow-none rounded-full relative"
           data-cart-trigger
+          aria-label="سلة التسوق"
         >
           <LucideShoppingBag absoluteStrokeWidth />
           {totalItems > 0 && (
@@ -111,9 +113,14 @@ export function SheetProfile() {
         {/* محتوى السلة (المنتجات) */}
         <div className="flex-1 overflow-y-auto my-4 space-y-4 px-1 no-scrollbar">
           {cart.length === 0 ? (
-            <div className="flex flex-col items-center justify-center h-40 text-muted-foreground">
-              <LucideShoppingBag size={48} className="mb-2 opacity-20" />
-              <p>السلة فارغة</p>
+            <div className="flex flex-col items-center justify-center h-full flex-1 text-muted-foreground gap-4">
+              <LucideShoppingBag size={64} className="mb-2 opacity-20" />
+              <p className="text-lg font-medium">السلة فارغة</p>
+              <SheetClose asChild>
+                <Button variant="outline" className="rounded-full px-8">
+                  ابدأ التسوق
+                </Button>
+              </SheetClose>
             </div>
           ) : (
             cart.map((item) => (
@@ -130,7 +137,13 @@ export function SheetProfile() {
                     <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</Button>
                     <span className="text-sm w-4 text-center">{item.quantity}</span>
                     <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</Button>
-                    <Button variant="ghost" size="icon" className="size-7 text-muted-foreground hover:text-rose-500 mr-auto" onClick={() => removeFromCart(item.id)}>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 text-muted-foreground hover:text-rose-500 mr-auto"
+                      onClick={() => removeFromCart(item.id)}
+                      aria-label="إزالة من السلة"
+                    >
                       <LucideTrash2 size={14} />
                     </Button>
                   </div>
