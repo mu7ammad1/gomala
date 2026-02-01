@@ -22,6 +22,11 @@ import {
   SheetTrigger,
   SheetClose,
 } from "@/components/ui/sheet";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 // --- مكون أزرار تسجيل الدخول ---
 export function AuthButton() {
@@ -84,21 +89,27 @@ export function SheetProfile() {
 
   return (
     <Sheet>
-      <SheetTrigger asChild>
-        <Button
-          variant={"default"}
-          size={"icon"}
-          className="p-0 shadow-none rounded-full relative"
-          data-cart-trigger
-        >
-          <LucideShoppingBag absoluteStrokeWidth />
-          {totalItems > 0 && (
-            <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] rounded-full size-4 flex items-center justify-center">
-              {totalItems}
-            </span>
-          )}
-        </Button>
-      </SheetTrigger>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <SheetTrigger asChild>
+            <Button
+              variant={"default"}
+              size={"icon"}
+              className="p-0 shadow-none rounded-full relative"
+              data-cart-trigger
+              aria-label="سلة التسوق"
+            >
+              <LucideShoppingBag absoluteStrokeWidth />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] rounded-full size-4 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </Button>
+          </SheetTrigger>
+        </TooltipTrigger>
+        <TooltipContent>سلة التسوق</TooltipContent>
+      </Tooltip>
 
       <SheetContent className="flex flex-col h-full max-sm:w-full">
         <SheetHeader className="text-right">
@@ -127,10 +138,32 @@ export function SheetProfile() {
                   <h4 className="text-sm font-medium line-clamp-1">{item.name}</h4>
                   <p className="text-rose-500 font-bold">{item.price.toLocaleString()} EGP</p>
                   <div className="flex items-center gap-2 mt-2">
-                    <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity - 1)}>-</Button>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="size-7 rounded-full"
+                      onClick={() => updateQuantity(item.id, item.quantity - 1)}
+                      aria-label="تقليل الكمية"
+                    >
+                      -
+                    </Button>
                     <span className="text-sm w-4 text-center">{item.quantity}</span>
-                    <Button variant="outline" size="icon" className="size-7 rounded-full" onClick={() => updateQuantity(item.id, item.quantity + 1)}>+</Button>
-                    <Button variant="ghost" size="icon" className="size-7 text-muted-foreground hover:text-rose-500 mr-auto" onClick={() => removeFromCart(item.id)}>
+                    <Button
+                      variant="outline"
+                      size="icon"
+                      className="size-7 rounded-full"
+                      onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                      aria-label="زيادة الكمية"
+                    >
+                      +
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="size-7 text-muted-foreground hover:text-rose-500 mr-auto"
+                      onClick={() => removeFromCart(item.id)}
+                      aria-label="حذف من السلة"
+                    >
                       <LucideTrash2 size={14} />
                     </Button>
                   </div>
