@@ -12,14 +12,11 @@ const ORDER: Mode[] = ["light", "dark"];
 
 export { ThemeSwitcher };
 
-
-
-
-
-
-
-
-
+const themeLabels: Record<Mode, string> = {
+  light: "فاتح",
+  dark: "داكن",
+  system: "تلقائي",
+};
 
 const ThemeSwitcher = () => {
 
@@ -54,7 +51,7 @@ const ThemeSwitcher = () => {
       variant="secondary"
       size="icon-lg"
       onClick={cycleTheme}
-      aria-label={`Switch theme: ${currentTheme} → ${nextTheme}`}
+      aria-label={`تبديل المظهر: من ${themeLabels[currentTheme]} إلى ${themeLabels[nextTheme]}`}
     >
       {currentTheme === "light" ? (
         <Sun
