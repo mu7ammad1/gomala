@@ -1,0 +1,3 @@
+## 2025-05-15 - Localization Consistency in RTL Apps
+**Learning:** In RTL and localized apps (like Arabic), consistency in accessibility attributes (ARIA labels) and micro-copy (currency, button labels) is crucial for a professional and accessible feel. Mixing English and Arabic (e.g., 'EGP' vs 'ج.م') or having English ARIA labels in an Arabic UI creates friction for screen reader users and dilutes the UX.
+**Action:** Always check for hardcoded English strings and ARIA labels in components, especially when adding new features or polishing existing ones. Use a consistent mapping for common terms like themes, quantities, and actions.
