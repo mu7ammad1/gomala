@@ -9,20 +9,15 @@ type Mode = "light" | "dark" | "system";
 
 const ORDER: Mode[] = ["light", "dark"];
 
+const THEME_MAP: Record<Mode, string> = {
+  light: "فاتح",
+  dark: "داكن",
+  system: "تلقائي",
+};
 
 export { ThemeSwitcher };
 
-
-
-
-
-
-
-
-
-
 const ThemeSwitcher = () => {
-
   const [mounted, setMounted] = useState(false);
   const { theme, setTheme } = useTheme();
 
@@ -31,10 +26,7 @@ const ThemeSwitcher = () => {
     setMounted(true);
   }, []);
 
-
-
   const ICON_SIZE = 16;
-
 
   const currentTheme: Mode = (theme as Mode) ?? "system";
 
@@ -44,7 +36,7 @@ const ThemeSwitcher = () => {
   }, [currentTheme]);
 
   const cycleTheme = () => setTheme(nextTheme);
-  
+
   if (!mounted) {
     return null;
   }
@@ -54,7 +46,7 @@ const ThemeSwitcher = () => {
       variant="secondary"
       size="icon-lg"
       onClick={cycleTheme}
-      aria-label={`Switch theme: ${currentTheme} → ${nextTheme}`}
+      aria-label={`تغيير المظهر: ${THEME_MAP[currentTheme]} ← ${THEME_MAP[nextTheme]}`}
     >
       {currentTheme === "light" ? (
         <Sun
