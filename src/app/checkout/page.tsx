@@ -181,7 +181,7 @@ function CheckoutContent() {
         </div>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-2 mb-10 bg-card p-1.5 h-16 rounded-[2rem] border shadow-md sticky top-24 z-40 backdrop-blur-md bg-card/80 transition-all">
+          <TabsList className="grid w-full grid-cols-2 mb-10 bg-card p-1.5 h-16 rounded-[2rem] border shadow-md sticky top-2 z-40 backdrop-blur-md bg-card/80 transition-all">
             <TabsTrigger
               value="cart"
               className="text-base font-bold rounded-3xl data-[state=active]:bg-primary data-[state=active]:text-white transition-all duration-300"

@@ -12,8 +12,6 @@ export default async function ProductsPage() {
 
   return (
     <div className="flex flex-col w-full gap-10 px-4 md:px-8">
-      <EventCard />
-      <CountdownTimer />
       <ProductGridClient products={products} />
     </div>
   );

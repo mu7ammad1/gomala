@@ -9,19 +9,19 @@ export async function generateMetadata({ params }: { params: Promise<{ product: 
   const resolvedParams = await params;
   const product = await getProductById(resolvedParams.product);
   return {
-    title: product?.name || "المنتج",
-    description: product?.description || "تفاصيل المنتج",
+    title: product?.json.name || "المنتج",
+    description: product?.json.description || "تفاصيل المنتج",
   };
 }
 
 export default async function Page({ params }: { params: Promise<{ product: string }> }) {
-  const resolvedParams = await params;
-  const productId = resolvedParams.product;
-  const product = await getProductById(productId);
+  const resolvedParams = (await params).product;
+  const product = await getProductById(resolvedParams);
 
   if (!product) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
+        {resolvedParams}
         <div className="bg-secondary/20 p-6 rounded-full">
           <LucideShoppingBag className="size-12 text-muted-foreground" />
         </div>

@@ -7,20 +7,17 @@ import { LucidePlus, LucideShoppingBag } from "lucide-react";
 import { useCart } from "@/hooks/use-cart";
 import { motion } from "framer-motion";
 
-interface ProductGridClientProps {
-    products: Product[];
-}
 
-export default function ProductGridClient({ products }: ProductGridClientProps) {
+export default function ProductGridClient({ products }: { products: Product[] }) {
     const { addToCart } = useCart();
 
     const handleQuickAdd = (product: Product, price: number) => {
         addToCart({
             id: product.id,
-            name: product.name,
+            name: product.json.name,
             price: price,
             quantity: 1,
-            image: product.image || "https://placehold.co/600x400/png",
+            image: product.json.image || "https://placehold.co/600x400/png",
         });
 
         // Trigger cart drawer if possible
@@ -31,9 +28,10 @@ export default function ProductGridClient({ products }: ProductGridClientProps) 
     return (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-x-4 gap-y-8 w-full p-2">
             {products.map((product) => {
-                const discountAmount = product.discount || 0;
-                const finalPrice = product.price - discountAmount;
-                const mainImage = product.image || "https://placehold.co/600x400/png";
+                const discountAmount = product.json.discount || 0;
+                const originalPrice = product.json.price || 0;
+                const finalPrice = originalPrice - discountAmount;
+                const mainImage = product.json.image || "https://placehold.co/400x400/png";
 
                 return (
                     <div
@@ -50,11 +48,11 @@ export default function ProductGridClient({ products }: ProductGridClientProps) 
                                 </div>
                             )}
 
-                            <Link href={`/product/${product.id}`} className="block w-full h-full">
+                            <Link href={`/${product.id}`} className="block w-full h-full">
                                 <img
                                     src={mainImage}
-                                    alt={product.name}
-                                    className="w-full h-full object-contain mix-blend-multiply transform transition-transform duration-700 group-hover:scale-105"
+                                    alt={product.json.name}
+                                    className="w-full h-full object-cover mix-blend-multiply transform transition-transform duration-700 group-hover:scale-105"
                                 />
                             </Link>
 
@@ -69,10 +67,10 @@ export default function ProductGridClient({ products }: ProductGridClientProps) 
                         </div>
 
                         {/* Product Meta Data */}
-                        <div className="flex flex-col flex-grow text-center md:text-right px-1">
-                            <Link href={`/product/${product.id}`} className="mb-1">
-                                <h3 className="text-[13px] md:text-[14px] font-medium text-foreground/90 line-clamp-2 hover:underline decoration-1 underline-offset-4">
-                                    {product.name}
+                        <div className="flex flex-col flex-grow px-1">
+                            <Link href={`/${product.id}`} className="mb-1">
+                                <h3 className="text-[13px] md:text-[14px] font-medium text-foreground/90 line-clamp-2 hover:underline decoration-1 underline-offset-4" dir="auto">
+                                    {product.json.name}
                                 </h3>
                             </Link>
 
@@ -82,7 +80,7 @@ export default function ProductGridClient({ products }: ProductGridClientProps) 
                                 </span>
                                 {discountAmount > 0 && (
                                     <span className="text-[12px] text-muted-foreground line-through opacity-70">
-                                        {product.price.toLocaleString()} ج.م
+                                        {originalPrice.toLocaleString()} ج.م
                                     </span>
                                 )}
                             </div>

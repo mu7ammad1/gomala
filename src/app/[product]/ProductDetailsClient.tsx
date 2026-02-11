@@ -10,14 +10,13 @@ import { LucideShoppingBag } from "lucide-react";
 import { Product } from "@/types/supabase";
 
 export default function ProductDetailsClient({ product }: { product: Product }) {
-    const router = useRouter();
     const { addToCart } = useCart();
 
     const [quantity, setQuantity] = useState(1);
-    const [mainImage, setMainImage] = useState(product.image || "");
+    const [mainImage, setMainImage] = useState(product.json.image || "");
 
-    const discountAmount = product.discount || 0;
-    const finalPrice = product.price - discountAmount;
+    const discountAmount = product.json.discount || 0;
+    const finalPrice = product.json.price - discountAmount;
 
     const handleIncrement = () => {
         if (quantity < 40) setQuantity(quantity + 1);
@@ -30,7 +29,7 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
     const handleOrder = () => {
         addToCart({
             id: product.id,
-            name: product.name,
+            name: product.json.name,
             price: finalPrice,
             quantity: quantity,
             image: mainImage || "https://placehold.co/600x400/png",
@@ -44,34 +43,21 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
         }
     };
 
-    const displayGallery = (product.gallery?.filter(img => img) || []).length > 0
-        ? product.gallery.filter(img => img)
+    const displayGallery = (product.json.gallery?.filter(img => img) || []).length > 0
+        ? product.json.gallery.filter(img => img)
         : [mainImage].filter(img => img);
 
     return (
-        <div className="w-full mx-auto py-8 px-4">
+        <div className="w-full mx-auto py-8 px-4" dir="rtl">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-min w-full">
-                <div className="flex flex-col gap-4 bg-muted/50 border rounded-xl h-full p-4">
-                    <div className="relative flex items-center justify-center overflow-hidden w-full h-min">
-                        {mainImage && (
-                            <motion.img
-                                key={mainImage}
-                                src={mainImage}
-                                alt={product.name}
-                                initial={{ opacity: 0.8 }}
-                                animate={{ opacity: 1 }}
-                                transition={{ duration: 0.3 }}
-                                className="w-full max-h-[550px] object-contain cursor-pointer rounded-xl"
-                            />
-                        )}
-                    </div>
-                    <div className="flex gap-2 overflow-x-auto no-scrollbar justify-center">
+                <div className="flex flex-row gap-4 bg-muted/50 border rounded-xl h-full p-4">
+                    <div className="flex flex-col gap-2 overflow-x-none no-scrollbar justify-start">
                         {displayGallery.map((img, index) => (
                             <motion.div
                                 key={index + img}
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
-                                className={`flex-shrink-0 size-14 rounded-xl border-2 transition-all duration-300 cursor-pointer overflow-hidden p-1.5 ${mainImage === img
+                                className={`flex-shrink-0 size-14 rounded-xl border-2 transition-all duration-300 cursor-pointer overflow-hidden p-0 ${mainImage === img
                                     ? "border-primary ring-2 ring-primary/20"
                                     : "border-transparent bg-secondary/20 hover:border-primary/50"
                                     }`}
@@ -79,18 +65,31 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                             >
                                 <img
                                     src={img}
-                                    alt={`${product.name} ${index}`}
-                                    className="w-full h-full object-cover"
+                                    alt={`${product.json.name} ${index}`}
+                                    className="w-full h-full object-cover rounded-xl"
                                 />
                             </motion.div>
                         ))}
+                    </div>
+                    <div className="relative flex items-center justify-center overflow-hidden w-full h-min">
+                        {mainImage && (
+                            <motion.img
+                                key={mainImage}
+                                src={mainImage}
+                                alt={product.json.name}
+                                initial={{ opacity: 0.8 }}
+                                animate={{ opacity: 1 }}
+                                transition={{ duration: 0.3 }}
+                                className="w-full max-h-[550px] object-contain cursor-pointer rounded-xl"
+                            />
+                        )}
                     </div>
                 </div>
 
                 <div className="w-full flex flex-col bg-muted/50 rounded-xl border h-min p-4">
                     <div className="flex items-center gap-3 mb-4">
                         <span className="bg-primary/10 text-primary px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
-                            كود المنتج: {product.code}
+                            كود المنتج: {product.json.code}
                         </span>
                         {discountAmount > 0 && (
                             <span className="bg-rose-500 text-white px-4 py-1.5 rounded-full text-xs font-bold animate-pulse">
@@ -99,7 +98,7 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                         )}
                     </div>
                     <h1 className="text-3xl md:text-4xl font-black text-foreground mb-6 leading-tight">
-                        {product.name}
+                        {product.json.name}
                     </h1>
                     <div className="flex flex-wrap items-center gap-4 mb-8">
                         <div className="flex items-baseline gap-2">
@@ -112,7 +111,7 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                         </div>
                         {discountAmount > 0 && (
                             <span className="text-xl text-muted-foreground/60 line-through decoration-rose-500/50">
-                                {product.price.toLocaleString()} ج.م
+                                {product.json.price.toLocaleString()} ج.م
                             </span>
                         )}
                     </div>
@@ -121,7 +120,7 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                         <div className="space-y-4">
                             <h3 className="text-lg font-bold text-foreground border-r-4 border-primary pr-3">وصف المنتج</h3>
                             <p className="text-muted-foreground leading-relaxed text-lg font-medium whitespace-pre-line">
-                                {product.description || "لا يوجد وصف متاح لهذا المنتج حالياً."}
+                                {product.json.description || "لا يوجد وصف متاح لهذا المنتج حالياً."}
                             </p>
                         </div>
 
@@ -145,7 +144,7 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                                         const val = parseInt(e.target.value);
                                         if (val >= 1 && val <= 40) setQuantity(val);
                                     }}
-                                    className="w-16 text-center border-none shadow-none focus:ring-0 bg-transparent text-xl font-black text-foreground"
+                                    className="w-16 text-center border-none shadow-none hover:bg-background focus:ring-0 bg-transparent text-xl font-black text-foreground"
                                     min={1}
                                     max={40}
                                 />
@@ -179,10 +178,10 @@ export default function ProductDetailsClient({ product }: { product: Product }) 
                     <span>الآراء</span>
                 </h2>
 
-                {product.reviews?.review_images && product.reviews.review_images.length > 0 ? (
-                    <div className="flex flex-col gap-8 max-w-2xl mx-auto">
-                        {product.reviews.review_images.map((img, idx) => (
-                            <div key={idx} className="w-full rounded-xl overflow-hidden border bg-gray-50 shadow-sm">
+                {product.json.reviews && product.json.reviews.length > 0 ? (
+                    <div className="grid grid-cols-3 max-lg:grid-cols-2 gap-4">
+                        {product.json.reviews.map((img, idx) => (
+                            <div key={idx} className="w-full rounded-xl overflow-hidden border bg-gray-50 shadow-sm w-lg:mx-auto">
                                 <img
                                     src={img}
                                     alt={`Review ${idx + 1}`}
