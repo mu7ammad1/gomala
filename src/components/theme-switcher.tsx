@@ -44,24 +44,32 @@ const ThemeSwitcher = () => {
   }, [currentTheme]);
 
   const cycleTheme = () => setTheme(nextTheme);
-  
+
+  const [isHovering, setIsHovering] = useState(false);
+  const onMouseEnter = () => setIsHovering(true);
+  const onMouseLeave = () => setIsHovering(false);
+
   if (!mounted) {
     return null;
   }
+
+  const displayedTheme = isHovering ? nextTheme : currentTheme;
 
   return (
     <Button
       variant="secondary"
       size="icon-lg"
       onClick={cycleTheme}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       aria-label={`Switch theme: ${currentTheme} → ${nextTheme}`}
     >
-      {currentTheme === "light" ? (
+      {displayedTheme === "light" ? (
         <Sun
           size={ICON_SIZE}
           className="text-muted-foreground transition-colors active:text-foreground"
         />
-      ) : currentTheme === "dark" ? (
+      ) : displayedTheme === "dark" ? (
         <Moon
           size={ICON_SIZE}
           className="text-muted-foreground transition-colors active:text-foreground"
